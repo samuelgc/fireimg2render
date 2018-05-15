@@ -19,3 +19,19 @@ The code to mask fire image pixels is found in "mask_fire.py"
 Training the Network
 --------------------
 You can train the network by running "render_fire.py"
+
+Training must be performed from command line in the following way:
+
+- cd /opt/hfs16.0
+- source houdini_setup
+
+(This will set up the houdini environment necessary for the mantra render to run)
+
+Then simply use the following command:
+
+- python render_fire.py
+
+
+Requirements
+------------
+The Neural Network makes use of Houdini's Mantra render engine. This can be acquired from [sidefx.com](https://sidefx.com)
