@@ -108,7 +108,7 @@ def render(heat):
         contents = f.read().replace('fc_bbtemp = 5000', 'fc_bbtemp = ' + str(heat))
     with open('./ifds/render_fire_{}.ifd'.format(numero), "w+") as f:
         f.write(contents)
-    call(["mantra", "./ifds/render_fire_{}.ifd".format(numero), "./render/render_{}.jpg".format(numero)])
+    call(["mantra","-f","./ifds/render_fire_{}.ifd".format(numero), "./render/render_{}.jpg".format(numero)])
 
 
 def map_render(temperature):
