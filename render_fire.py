@@ -1,6 +1,7 @@
 from subprocess import call
 
 from mask_fire import *
+import math
 
 numero = 0
 
@@ -21,6 +22,14 @@ def d_lrelu(x):
             result.append(0.01)
         else:
             result.append(1.0)
+    return result
+
+def sigmoid(x):
+    result = 1 / (1 + math.exp(-x))
+    return result
+def d_sigmoid(x):
+    # print(x)
+    result = x * (1-x)
     return result
 
 
@@ -62,19 +71,19 @@ class MLP:
 
         for i in range(1,len(self.shape)):
             self.layers[i][...] = l_relu(np.dot(self.layers[i-1], self.weights[i-1]))
-
+        # self.layers[-1] = np.clip(self.layers[-1],0,1)
         return self.layers[-1]
 
     def backprop(self, target, rate=0.1, mom=0.1):
         deltas = []
 
-        error = np.sum(np.power((self.layers[0] - target), 2.0)) / 9.0
-        delta = error * np.array(d_lrelu(self.layers[-1]))
+        error = np.mean(self.layers[0] - target)
+        delta = error * np.array(sigmoid(self.layers[-1]))
         deltas.append(delta)
 
         # Compute error
         for i in range(len(self.shape)-2, 0, -1):
-            delta = np.dot(deltas[0], self.weights[i].T) * d_lrelu(self.layers[i])
+            delta = np.dot(deltas[0], self.weights[i].T) * d_sigmoid(self.layers[i])
             deltas.insert(0, delta)
 
         # Update weights
@@ -91,10 +100,10 @@ class MLP:
         for e in range(epochs):
             n = np.random.randint(len(data))
             temp = self.step_forward(data[n])
-            fire_stats = map_render(temp)
+            fire_stats , heat1 = map_render(temp)
             fire_stats.append(1)
             error = self.backprop(fire_stats, rate=lrate, mom=mome)
-            print "Epoch {}: Temperature output: {}, with an error of {}".format(e, temp[0]*25000, error)
+            print "Epoch {}: Temperature output: {}, with an error of {}".format(e, heat1, error)
 
     def predict(self, data):
         return self.step_forward(data)
@@ -105,13 +114,15 @@ def render(heat):
     global numero
     numero = numero + 1
     with open('./ifds/fire.ifd') as f:
-        contents = f.read().replace('fc_bbtemp = 5000', 'fc_bbtemp = ' + str(heat))
+        contents = f.read().replace('bbtemp 4177', 'bbtemp ' + str(heat)).replace('bbtemp = 5000', 'bbtemp = ' + str(heat))
     with open('./ifds/render_fire_{}.ifd'.format(numero), "w+") as f:
         f.write(contents)
-    call(["mantra","-f","./ifds/render_fire_{}.ifd".format(numero), "./render/render_{}.jpg".format(numero)])
-
+    print numero ,heat, "writing now creating" 
+    call(["mantra", "./ifds/render_fire_{}.ifd".format(numero), "./render/render_{}.jpg".format(numero)])
+    print "created"
 
 def map_render(temperature):
+    print temperature
     heat = temperature[0]
     if heat < 0:
         heat = 0
@@ -125,11 +136,11 @@ def map_render(temperature):
     fire_stats = map_stats(fire_img, fire_mask)
     for i in range(len(fire_stats)):
         fire_stats[i] /= 25000
-    return fire_stats
+    return fire_stats, heat
 
 
 def main():
-    learner = MLP(9, 512, 1024, 512, 1)
+    learner = MLP(9, 20, 30, 20, 1)
     # Train
     data = np.loadtxt('./train_data/normalized/google_fire.csv', delimiter=",")
     learner.train(data, 1000, 0.1, 0)
