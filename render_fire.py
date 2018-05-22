@@ -71,9 +71,14 @@ class MLP:
     def step_forward(self, data):
         self.layers[0][0:-1] = data
 
-        for i in range(1,len(self.shape)):
-            self.layers[i][...] = sigmoid(np.dot(self.layers[i-1], self.weights[i-1]))
+        # for i in range(1,len(self.shape)):
+        #     self.layers[i][...] = sigmoid(np.dot(self.layers[i-1], self.weights[i-1]))
         # self.layers[-1] = np.clip(self.layers[-1],0,1)
+        # attempt with all l_relu but last one
+        shapelen = len(self.shape)
+        for i in range(1,len(self.shape)-1):
+            self.layers[i][...] = l_relu(np.dot(self.layers[i-1], self.weights[i-1]))
+        self.layers[shapelen -1][...] = sigmoid(np.dot(self.layers[shapelen - 2], self.weights[shapelen-2]))
         return self.layers[-1]
 
     def backprop(self, result, rate=0.1, mom=0.1):
@@ -85,7 +90,7 @@ class MLP:
 
         # Compute error
         for i in range(len(self.shape)-2, 0, -1):
-            delta = np.dot(deltas[0], self.weights[i].T) * d_sigmoid(self.layers[i])
+            delta = np.dot(deltas[0], self.weights[i].T) * d_lrelu(self.layers[i])
             deltas.insert(0, delta)
 
         # Update weights
@@ -146,7 +151,7 @@ def main():
     learner = MLP(9, 20, 30, 20, 1)
     # Train
     data = np.loadtxt('./train_data/normalized/google_fire.csv', delimiter=",")
-    learner.train(data, 1000, 0.1, 0)
+    learner.train(data, 1000, 0.1, 0.5)
 
 
 if __name__ == '__main__':
