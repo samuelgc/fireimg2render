@@ -151,7 +151,7 @@ def main():
     learner = MLP(9, 20, 30, 20, 1)
     # Train
     data = np.loadtxt('./train_data/normalized/google_fire.csv', delimiter=",")
-    learner.train(data, 1000, 0.1, 0.5)
+    learner.train(data, 1000, 0.1, 0)
 
 
 if __name__ == '__main__':
