@@ -25,7 +25,9 @@ def d_lrelu(x):
     return result
 
 def sigmoid(x):
-    result = 1 / (1 + math.exp(-x))
+    result = []
+    for num in x:
+        result.append(1 / (1 + math.exp(-num)))
     return result
 def d_sigmoid(x):
     # print(x)
@@ -70,15 +72,15 @@ class MLP:
         self.layers[0][0:-1] = data
 
         for i in range(1,len(self.shape)):
-            self.layers[i][...] = l_relu(np.dot(self.layers[i-1], self.weights[i-1]))
+            self.layers[i][...] = sigmoid(np.dot(self.layers[i-1], self.weights[i-1]))
         # self.layers[-1] = np.clip(self.layers[-1],0,1)
         return self.layers[-1]
 
-    def backprop(self, target, rate=0.1, mom=0.1):
+    def backprop(self, result, rate=0.1, mom=0.1):
         deltas = []
 
-        error = np.mean(self.layers[0] - target)
-        delta = error * np.array(sigmoid(self.layers[-1]))
+        error = np.mean(self.layers[0] - result) * -1
+        delta = error * np.array(d_sigmoid(self.layers[-1]))
         deltas.append(delta)
 
         # Compute error
@@ -118,7 +120,8 @@ def render(heat):
     with open('./ifds/render_fire_{}.ifd'.format(numero), "w+") as f:
         f.write(contents)
     print numero ,heat, "writing now creating" 
-    call(["mantra", "./ifds/render_fire_{}.ifd".format(numero), "./render/render_{}.jpg".format(numero)])
+    f = open('/dev/null', 'w') # Added this so the warning about licencse expiring doesn't shot up
+    call(["mantra", "./ifds/render_fire_{}.ifd".format(numero), "./render/render_{}.jpg".format(numero)],stderr=f)
     print "created"
 
 def map_render(temperature):
