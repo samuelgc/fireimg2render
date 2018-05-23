@@ -106,7 +106,7 @@ class MLP:
 
         return error
 
-    def train(self, data, epochs=1000, lrate=0.1, mome=0.1,saveEpochs = 5):
+    def train(self, data, epochs=1000, lrate=0.1, mome=0.1,saveEpochs = 5,filename = "save.p"):
         for e in range(epochs):
             n = np.random.randint(len(data))
             temp = self.step_forward(data[n])
@@ -116,8 +116,8 @@ class MLP:
             print "Epoch {}: Temperature output: {}, with an error of {}".format(e, heat1, error)
             if(e % saveEpochs  == 0):
                 self.numeroSave = numero
-                pickle.dump(self, open("save.p","wb"))
-                print "Epoch {}: Model Saved to {} : numero {}".format(e,"save.p",self.numeroSave)
+                pickle.dump(self, open(filename,"wb"))
+                print "Epoch {}: Model Saved to {} : numero {}".format(e,filename,self.numeroSave)
 
 
     def predict(self, data):
@@ -156,17 +156,19 @@ def map_render(temperature):
 def main():
     #print sys.argv[0] , sys.argv[1]
     global numero
-    if(len(sys.argv) > 1):
-        learner = pickle.load(open(sys.argv[1],"rb"))
+    if(len(sys.argv) > 2):
+        learner = pickle.load(open(sys.argv[2],"rb"))
         print "Loaded Check Point"
         numero = learner.numeroSave
-        print numero
     else:
         print "No Check Point"
         learner = MLP(9, 20, 30, 20, 1)
     # Train
     data = np.loadtxt('./train_data/normalized/google_fire.csv', delimiter=",")
-    learner.train(data, 1000, 0.1, 0)
+    if(len(sys.argv) > 1):
+        learner.train(data, 1000, 0.1, 0,filename = sys.argv[1])
+    else:
+        learner.train(data, 1000, 0.1, 0)
 
 
 if __name__ == '__main__':
