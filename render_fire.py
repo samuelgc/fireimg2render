@@ -1,9 +1,11 @@
 from subprocess import call
-
+import sys
 from mask_fire import *
 import math
+import cPickle as pickle
+# import os
 
-numero = 0
+numero = 0 
 
 def l_relu(x):
     result = []
@@ -43,6 +45,7 @@ class MLP:
     """
     def __init__(self, *args):
         self.shape = args
+        self.numeroSave = 0
         n = len(args)
 
         # Build layers
@@ -103,7 +106,7 @@ class MLP:
 
         return error
 
-    def train(self, data, epochs=1000, lrate=0.1, mome=0.1):
+    def train(self, data, epochs=1000, lrate=0.1, mome=0.1,saveEpochs = 5):
         for e in range(epochs):
             n = np.random.randint(len(data))
             temp = self.step_forward(data[n])
@@ -111,6 +114,11 @@ class MLP:
             fire_stats.append(1)
             error = self.backprop(fire_stats, rate=lrate, mom=mome)
             print "Epoch {}: Temperature output: {}, with an error of {}".format(e, heat1, error)
+            if(e % saveEpochs  == 0):
+                self.numeroSave = numero
+                pickle.dump(self, open("save.p","wb"))
+                print "Epoch {}: Model Saved to {} : numero {}".format(e,"save.p",self.numeroSave)
+
 
     def predict(self, data):
         return self.step_forward(data)
@@ -124,13 +132,11 @@ def render(heat):
         contents = f.read().replace('bbtemp 4177', 'bbtemp ' + str(heat)).replace('bbtemp = 5000', 'bbtemp = ' + str(heat))
     with open('./ifds/render_fire_{}.ifd'.format(numero), "w+") as f:
         f.write(contents)
-    print numero ,heat, "writing now creating" 
-    f = open('/dev/null', 'w') # Added this so the warning about licencse expiring doesn't shot up
+    f = open('/dev/null', 'w') # Added this so the warning about licencse expiring doesn't show up
     call(["mantra", "./ifds/render_fire_{}.ifd".format(numero), "./render/render_{}.jpg".format(numero)],stderr=f)
-    print "created"
 
 def map_render(temperature):
-    print temperature
+    # print temperature
     heat = temperature[0]
     if heat < 0:
         heat = 0
@@ -148,7 +154,16 @@ def map_render(temperature):
 
 
 def main():
-    learner = MLP(9, 20, 30, 20, 1)
+    #print sys.argv[0] , sys.argv[1]
+    global numero
+    if(len(sys.argv) > 1):
+        learner = pickle.load(open(sys.argv[1],"rb"))
+        print "Loaded Check Point"
+        numero = learner.numeroSave
+        print numero
+    else:
+        print "No Check Point"
+        learner = MLP(9, 20, 30, 20, 1)
     # Train
     data = np.loadtxt('./train_data/normalized/google_fire.csv', delimiter=",")
     learner.train(data, 1000, 0.1, 0)
