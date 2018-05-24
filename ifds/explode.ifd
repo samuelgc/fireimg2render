@@ -1,0 +1,76 @@
+# IFD created by Houdini Version: 16.0.504.20
+# Generation Time: May 02, 2018 at 12:44:29
+#   Render Target: mantra16.0
+#        HIP File: /users/animation/samuelgc/untitled, $T=1.95833, $FPS=24
+#   Output driver: /out/mantra1
+ray_version VEX16.0.504.20
+ray_declare global float global:fps 24
+fps 24; tcur 1.95833
+
+setenv HIP = "$HIP_OVERRIDE"
+if "$HIP" == "" then	# {
+    setenv HIP = "/users/animation/samuelgc"
+endif	# }
+if "$_TMP_SHARED_STORAGE" == "" then	# {
+    setenv _TMP_SHARED_STORAGE = "/users/animation/samuelgc/ifds/storage"
+endif	# }
+if "$_TMP_LOCAL_STORAGE" == "" then	# {
+    setenv _TMP_LOCAL_STORAGE = "/tmp/houdini_temp/ifds/storage"
+endif	# }
+ray_defaults 'RenderProperties.json'
+# Retained geometry
+# Save geometry for /obj/explosion/file2 at time 1.95833
+ray_start geo	# {
+    ray_detail /obj/explosion/file2 $_TMP_SHARED_STORAGE/untitled.48_000_0012.bgeo.sc
+ray_end	# }
+
+# Main image from /obj/cam1
+ray_time 1.95833333333333326	# {
+    ray_property renderer rendertype "beauty"
+    ray_property renderer renderlabel "/obj/cam1.beauty"
+    ray_declare plane string IPlay.s3dleftplane ""
+    ray_declare plane string IPlay.s3drightplane ""
+    ray_image "/users/animation/samuelgc/explode.exr"
+	ray_declare plane string IPlay.rendermode "append"
+	ray_declare plane string IPlay.framerange "48 48"
+	ray_declare plane float IPlay.currentframe 48
+	ray_declare plane string IPlay.rendersource "/out/mantra1"
+	ray_declare plane int IPlay.houdiniportnum 10992
+	ray_start plane	# {
+	    ray_property plane variable "Cf+Af"
+	    ray_property plane vextype "vector4"
+	    ray_property plane channel "C"
+	ray_end	# }
+    
+    ray_property renderer colorspace "gamma"
+    ray_property renderer logcolors 0
+    ray_property renderer renderengine "raytrace"
+    ray_property renderer verbose 0
+    ray_property image samples 3 3
+    ray_property renderer pbrshader pathtracer use_renderstate 0
+    ray_property image resolution 1280 720
+    ray_property image pixelaspect 1
+    ray_property camera clip 5.23308001319200056 289681.905154716689
+    ray_property camera projection "perspective"
+    ray_property object velocityscale 0.0208333333333333322
+    ray_transform -0.749372101170002858 0.0353343313332806844 -0.661205670738904572 0 5.5511151231257827e-17 0.998575174574101387 0.0533631026487713933 0 0.66214911763745099 0.0399888203568603828 -0.748304376746796729 0 -64.2811954993928367 -130.62707216376478 9.18301906741238305 1
+    ray_start segment	# {
+	ray_property camera orthowidth 212.873106562162832
+	ray_property camera zoom 1.20710555938823605
+	ray_property image window 0 1 0 1
+    ray_end	# }
+    ray_start light	# {
+	ray_transform -0.749372101170002969 -2.81786133057751243e-17 0.66214911763745099 0 0.0353343313332806774 0.998575174574101165 0.0399888203568603828 0 -0.661205670738904683 0.0533631026487713794 -0.748304376746796729 0 -37.4830500062923591 129.950917000915155 54.6590527629968435 1
+	ray_property object name "soho_autoheadlight_light"
+	ray_property light projection "perspective"
+	ray_property light zoom 1.20710550584963339 1.20710550584963339
+    ray_end	# }
+
+    ray_start object	# {
+	ray_transform 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1
+	ray_geometry /obj/explosion/file2
+	ray_property object name "/obj/explosion"
+    ray_end	# }
+    ray_raytrace
+# Generation time: 0.0271881 seconds
+ray_quit	# }
