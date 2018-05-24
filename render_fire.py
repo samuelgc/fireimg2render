@@ -1,3 +1,4 @@
+import random
 from subprocess import call
 
 from mask_fire import *
