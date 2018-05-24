@@ -110,10 +110,10 @@ class MLP:
         for e in range(epochs):
             n = np.random.randint(len(data))
             temp = self.step_forward(data[n])
-            fire_stats = map_render(temp)
+            fire_stats, heat = map_render(temp)
             fire_stats.append(1)
             error = self.backprop(fire_stats, rate=lrate, mom=mome)
-            print "Epoch {}: Temperature output: {}, with an error of {}".format(e, temp[0]*25000, error)
+            print "Epoch {}: Temperature output: {}, with an error of {}".format(e, heat, error)
 
     def predict(self, data):
         return self.step_forward(data)
@@ -144,7 +144,7 @@ def map_render(temperature):
     fire_stats = map_stats(fire_img, fire_mask)
     for i in range(len(fire_stats)):
         fire_stats[i] /= 25000
-    return fire_stats
+    return fire_stats, heat
 
 
 def main():
