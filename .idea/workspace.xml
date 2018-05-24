@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bdd81ca7-80f5-4900-9b10-579abb05ac82" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ifds/render_fire.ifd" beforeDir="false" afterPath="$PROJECT_DIR$/ifds/render_fire.ifd" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/render_fire.py" beforeDir="false" afterPath="$PROJECT_DIR$/render_fire.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -18,8 +16,8 @@
       <file leaf-file-name="render_fire.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/render_fire.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="65" column="38" lean-forward="true" selection-start-line="65" selection-start-column="38" selection-end-line="65" selection-end-column="38" />
+            <state relative-caret-position="-36">
+              <caret line="96" column="35" lean-forward="true" selection-start-line="96" selection-start-column="35" selection-end-line="96" selection-end-column="35" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -30,7 +28,7 @@
       <file leaf-file-name="fire.ifd" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ifds/fire.ifd">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="483">
+            <state relative-caret-position="130305">
               <caret line="3557" column="12" selection-start-line="3557" selection-start-column="4" selection-end-line="3557" selection-end-column="12" />
             </state>
           </provider>
@@ -39,7 +37,7 @@
       <file leaf-file-name="render_fire.ifd" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ifds/render_fire.ifd">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="444">
+            <state relative-caret-position="137895">
               <caret line="4063" column="368" selection-start-line="4063" selection-start-column="362" selection-end-line="4063" selection-end-column="368" />
             </state>
           </provider>
@@ -162,19 +160,43 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="bottom" id="Messages" order="7" />
       <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Messages" order="7" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/render_fire.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="975">
+          <caret line="65" column="38" lean-forward="true" selection-start-line="65" selection-start-column="38" selection-end-line="65" selection-end-column="38" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ifds/fire.ifd">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="130305">
+          <caret line="3557" column="12" selection-start-line="3557" selection-start-column="4" selection-end-line="3557" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ifds/render_fire.ifd">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="137895">
+          <caret line="4063" column="368" selection-start-line="4063" selection-start-column="362" selection-end-line="4063" selection-end-column="368" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/render_fire.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="990">
@@ -191,9 +213,6 @@
           <caret line="84" lean-forward="true" selection-start-line="84" selection-end-line="86" selection-end-column="77" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/image_scraper.py">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/ifds/fire.ifd">
       <provider selected="true" editor-type-id="text-editor">
@@ -238,22 +257,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ifds/render_fire.ifd">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="444">
+        <state relative-caret-position="137895">
           <caret line="4063" column="368" selection-start-line="4063" selection-start-column="362" selection-end-line="4063" selection-end-column="368" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ifds/fire.ifd">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="483">
+        <state relative-caret-position="130305">
           <caret line="3557" column="12" selection-start-line="3557" selection-start-column="4" selection-end-line="3557" selection-end-column="12" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/render_fire.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="65" column="38" lean-forward="true" selection-start-line="65" selection-start-column="38" selection-end-line="65" selection-end-column="38" />
+        <state relative-caret-position="-36">
+          <caret line="96" column="35" lean-forward="true" selection-start-line="96" selection-start-column="35" selection-end-line="96" selection-end-column="35" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>

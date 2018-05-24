@@ -1,4 +1,5 @@
 import random
+import math
 from subprocess import call
 
 from mask_fire import *
@@ -22,6 +23,18 @@ def d_lrelu(x):
             result.append(0.01)
         else:
             result.append(1.0)
+    return result
+
+
+def sigmoid(x):
+    result = []
+    for num in x:
+        result.append(1 / (1 + math.exp(-num)))
+    return result
+
+
+def d_sigmoid(x):
+    result = x * (1-x)
     return result
 
 
@@ -61,16 +74,21 @@ class MLP:
     def step_forward(self, data):
         self.layers[0][0:-1] = data
 
-        for i in range(1,len(self.shape)):
-            self.layers[i][...] = l_relu(np.dot(self.layers[i-1], self.weights[i-1]))
+        # for i in range(1,len(self.shape)):
+        #     self.layers[i][...] = l_relu(np.dot(self.layers[i-1], self.weights[i-1]))
+
+        shapelen = len(self.shape)
+        for i in range(1, len(self.shape) - 1):
+            self.layers[i][...] = l_relu(np.dot(self.layers[i - 1], self.weights[i - 1]))
+        self.layers[shapelen - 1][...] = sigmoid(np.dot(self.layers[shapelen - 2], self.weights[shapelen - 2]))
 
         return self.layers[-1]
 
     def backprop(self, target, rate=0.1, mom=0.1):
         deltas = []
 
-        error = np.sum(np.power((self.layers[0] - target), 2.0)) / 9.0
-        delta = error * np.array(d_lrelu(self.layers[-1]))
+        error = np.mean(self.layers[0] - target) * -1.0
+        delta = error * np.array(d_sigmoid(self.layers[-1]))
         deltas.append(delta)
 
         # Compute error
