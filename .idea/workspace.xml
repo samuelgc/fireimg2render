@@ -13,11 +13,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="render_fire.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="render_fire.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/render_fire.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="150" column="31" selection-start-line="150" selection-start-column="31" selection-end-line="150" selection-end-column="31" />
+            <state relative-caret-position="594">
+              <caret line="114" column="44" selection-start-line="114" selection-start-column="44" selection-end-line="114" selection-end-column="44" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -25,11 +25,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="fire.ifd" pinned="false" current-in-tab="false">
+      <file leaf-file-name="mask_fire.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/mask_fire.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1200">
+              <caret line="90" column="26" lean-forward="true" selection-start-line="90" selection-start-column="26" selection-end-line="90" selection-end-column="26" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="fire.ifd" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ifds/fire.ifd">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="130305">
-              <caret line="3557" column="12" selection-start-line="3557" selection-start-column="4" selection-end-line="3557" selection-end-column="12" />
+            <state relative-caret-position="-5007">
+              <caret line="1983" column="19" selection-start-line="1983" selection-start-column="13" selection-end-line="1983" selection-end-column="19" />
             </state>
           </provider>
         </entry>
@@ -48,8 +57,8 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>bb</find>
-      <find>bbtemp</find>
       <find>product8</find>
+      <find>bbtemp</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -89,6 +98,11 @@
               <item name="FireImg_Render" type="b2602c69:ProjectViewProjectNode" />
               <item name="FireImg_Render" type="462c0819:PsiDirectoryNode" />
               <item name="ifds" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="FireImg_Render" type="b2602c69:ProjectViewProjectNode" />
+              <item name="FireImg_Render" type="462c0819:PsiDirectoryNode" />
+              <item name="masks" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -147,7 +161,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="1679" y="0" width="1602" height="1200" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18960051" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -347,13 +360,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mask_fire.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="90" column="26" lean-forward="true" selection-start-line="90" selection-start-column="26" selection-end-line="90" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
@@ -371,27 +377,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ifds/fire.ifd">
+    <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="130305">
-          <caret line="3557" column="12" selection-start-line="3557" selection-start-column="4" selection-end-line="3557" selection-end-column="12" />
+        <state relative-caret-position="30">
+          <caret line="2" column="17" lean-forward="true" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mask_fire.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1200">
+          <caret line="90" column="26" lean-forward="true" selection-start-line="90" selection-start-column="26" selection-end-line="90" selection-end-column="26" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/render_fire.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="150" column="31" selection-start-line="150" selection-start-column="31" selection-end-line="150" selection-end-column="31" />
+        <state relative-caret-position="594">
+          <caret line="114" column="44" selection-start-line="114" selection-start-column="44" selection-end-line="114" selection-end-column="44" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
+    <entry file="file://$PROJECT_DIR$/ifds/fire.ifd">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="17" lean-forward="true" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
+        <state relative-caret-position="-5007">
+          <caret line="1983" column="19" selection-start-line="1983" selection-start-column="13" selection-end-line="1983" selection-end-column="19" />
         </state>
       </provider>
     </entry>

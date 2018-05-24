@@ -115,8 +115,10 @@ class MLP:
             error = self.backprop(fire_stats, rate=lrate, mom=mome)
             print "Epoch {}: Temperature output: {}, with an error of {}".format(e, heat, error)
 
-    def predict(self, data):
-        return self.step_forward(data)
+    def predict(self, img):
+        fire_mask = mask(img)
+        fire_data = map_stats(img, fire_mask)
+        return self.step_forward(fire_data)
 
 
 def render(heat):
