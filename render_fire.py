@@ -106,7 +106,7 @@ class MLP:
 
         return error
 
-    def train(self, data, epochs=1000, lrate=0.1, mome=0.1,saveEpochs = 5,filename = "save.p"):
+    def train(self, data, epochs=1000, lrate=0.1, mome=0.1,saveEpochs = 5,filename = None):
         for e in range(epochs):
             n = np.random.randint(len(data))
             temp = self.step_forward(data[n])
@@ -114,7 +114,7 @@ class MLP:
             fire_stats.append(1)
             error = self.backprop(fire_stats, rate=lrate, mom=mome)
             print "Epoch {}: Temperature output: {}, with an error of {}".format(e, heat1, error)
-            if(e % saveEpochs  == 0):
+            if(e % saveEpochs  == 0 and filename != None):
                 self.numeroSave = numero
                 pickle.dump(self, open(filename,"wb"))
                 print "Epoch {}: Model Saved to {} : numero {}".format(e,filename,self.numeroSave)
@@ -154,7 +154,9 @@ def map_render(temperature):
 
 
 def main():
-    #print sys.argv[0] , sys.argv[1]
+    #arg0 = name of python file :D 
+    #arg1 = name of file to save model to
+    #arg2 = name of file to load model from
     global numero
     if(len(sys.argv) > 2):
         learner = pickle.load(open(sys.argv[2],"rb"))
@@ -165,10 +167,11 @@ def main():
         learner = MLP(9, 20, 30, 20, 1)
     # Train
     data = np.loadtxt('./train_data/normalized/google_fire.csv', delimiter=",")
+    # data = np.loadtxt('./train_data/normalized/google_fire.csv', delimiter=",")
     if(len(sys.argv) > 1):
-        learner.train(data, 1000, 0.1, 0,filename = sys.argv[1])
+        learner.train(data, 1000, .02, 0,filename = sys.argv[1])
     else:
-        learner.train(data, 1000, 0.1, 0)
+        learner.train(data, 1000, .01, 0)
 
 
 if __name__ == '__main__':
