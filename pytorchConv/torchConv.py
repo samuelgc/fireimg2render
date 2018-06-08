@@ -7,26 +7,32 @@ from PIL import Image
 from torch.utils.data.dataset import Dataset
 import os
 import matplotlib.pyplot as plt
-import cPickle as pickle
+import matplotlib.image as mpimg
 
 class ConvNet(nn.Module):
     def __init__(self,num_out=10):
         super(ConvNet,self).__init__()
         self.layer1 = nn.Sequential(
-            nn.Conv2d(3,16,kernel_size=5,stride = 1 , padding = 2),
+            nn.Conv2d(3,16,kernel_size=5,stride = 2 , padding = 3),
             nn.BatchNorm2d(16),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2))
         self.layer2 = nn.Sequential(
-            nn.Conv2d(16,32,kernel_size=5, stride = 1, padding = 2),
+            nn.Conv2d(16,32,kernel_size=5, stride = 2, padding = 3),
             nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2))
-        self.fc = nn.Linear(8*8*32, num_out)
+        self.layer3 = nn.Sequential(
+            nn.Conv2d(32,64,kernel_size=5, stride = 2, padding = 3),
+            nn.BatchNorm2d(64),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2))
+        self.fc = nn.Linear(8*8*64, num_out)
     def forward(self,x):
         out = self.layer1(x)
         out = self.layer2(out)
-        # print out 
+        out = self.layer3(out)
+        # print out.shape
         out = out.reshape(out.size(0),-1)
         out = self.fc(out)
         out = out[0]
@@ -47,11 +53,11 @@ class MyData(Dataset):
         self.imgLab = np.asarray(self.imgLab)
         maxVal = np.max(self.imgLab)
         minVal = np.min(self.imgLab)
-        print "Max = ", maxVal , "Min = " , minVal
+        print "Max[{}] Min[{}]".format(maxVal,minVal)
         self.imgLab = (self.imgLab - minVal)/ (maxVal - minVal)
 
         self.transTen = transforms.Compose([
-            transforms.CenterCrop(32),
+            transforms.CenterCrop(512),
             transforms.ToTensor()
         ]) 
 
@@ -86,6 +92,17 @@ train_loader = torch.utils.data.DataLoader(dataset=loadData,
 x = []
 y = []
 total_step = len(train_loader)
+# print loadData[0][0]
+# imgTemp = torch.Tensor.numpy(loadData[0][0])
+# imgTemp *= 255
+# imgTemp = np.uint8(imgTemp)
+# imgTemp = np.transpose(imgTemp, (1, 2, 0))
+# print loadData[0][1].item()  * 24900
+# img = Image.fromarray(imgTemp)
+# lol= plt.imshow(imgTemp)
+# plt.show()
+# bob = input()
+# print imgTemp
 for epoch in range(num_epochs):
     # for i, (images, labels) in enumerate(train_loader):
     for i, (images, labels) in enumerate(train_loader):
@@ -106,7 +123,8 @@ for epoch in range(num_epochs):
             print ('Epoch [{}/{}], Step [{}/{}], Loss: {:.10f}' 
                    .format(epoch+1, num_epochs, i+1, total_step, loss.item()))
             y += [loss.item()]
-
+plt.plot(np.asarray(y))
+plt.show()
 model.eval()
 # for img in os.listdir(file_dir)
 totLoss = 0
@@ -114,9 +132,9 @@ b = 0
 for i , (images,labels) in enumerate(train_loader):
     b += 1
     outputs = model(images)
-    out2 = round(outputs[0] *24900 / 100.0) * 100
-    out3 = torch.tensor(out2/24900)
-    lab2 = round(labels[0] *24900 / 100.0) * 100
+    out2 = round(outputs[0] *9900 / 100.0) * 100
+    out3 = torch.tensor(out2/9900)
+    lab2 = round(labels[0] *9900 / 100.0) * 100
     if((i+1) % 10 == 0):
         print "Out[{}] -- Expected[{}]".format(out2,lab2)
     loss = LossFunc(out3,labels)
@@ -131,5 +149,4 @@ print "I = " , i
 
 plt.plot(np.asarray(y),'b')
 plt.show()
-plt.save()
 # bob = input()
