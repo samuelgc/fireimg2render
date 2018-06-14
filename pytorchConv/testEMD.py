@@ -13,8 +13,11 @@ def showScores():
     for i,(filename1,filename2) in enumerate(zip(files,files2)):
         img = Image.open(fileDir + filename1)
         img2 = Image.open(fileDir + filename2)
-        emdScore = pyemd.emd_samples(img,img2)
-        print "CHECK[{}] EMD_SCORE[{}]".format(i,emdScore)
+        h1 = img.histogram()
+        h2 = img2.histogram()
+        # emdScore = pyemd.emd_samples(img,img2)
+        wasserstein_distance_score = wasserstein_distance(h1,h2)
+        print "CHECK[{}] EMD_SCORE[{}]".format(i,wasserstein_distance_score)
         img.show()
         img2.show()
         inputYo = True
@@ -33,11 +36,11 @@ def createStupidImg():
     # for i in range(50):
     npArr = np.array([0]*30000)
     lol = np.reshape(npArr,(100,100,3))
-    changeColor(lol,0,0,100,[255,0,0])
+    changeColor(lol,0,0,20,[255,0,0])
 
     npArr2 = np.array([0]*30000)
     lol2 = np.reshape(npArr2,(100,100,3))
-    changeColor(lol2,0,0,70,[255,255,255])
+    changeColor(lol2,50,50,20,[255,0,0])
 
     img = Image.fromarray(np.uint8(lol))
     img2 = Image.fromarray(np.uint8(lol2))
