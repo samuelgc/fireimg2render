@@ -3,3 +3,6 @@ idea/*
 render/*
 ifds/*
 *.jpg
+*.JPEG
+*.jpeg
+*.ifd
