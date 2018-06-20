@@ -52,7 +52,7 @@ def getTileData(tile,mat,xOff,yOff,zOff,comp):
     x_end = x_start + xLen
     y_end = y_start + yLen
     z_end = z_start + zLen
-    #if values are all the same
+    #if values are all the same AKA compressed 
     if(comp == 2):
         arr = np.full((xLen,yLen,zLen),tile) # Both of these methods work 
         arr2 = np.full(xLen*yLen*zLen,tile) # Both of these methods work 
