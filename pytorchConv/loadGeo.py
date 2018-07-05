@@ -2,9 +2,6 @@ import simplejson
 import numpy as np
 from PIL import Image
 import collections
-dimX = 35
-dimY = 65
-dimZ = 35
 def loadJson(path):
     return simplejson.load(open(path,'r'))
 def getInfo(data):

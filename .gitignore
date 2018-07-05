@@ -6,3 +6,5 @@ ifds/*
 *.JPEG
 *.jpeg
 *.ifd
+*.png
+*.PNG
