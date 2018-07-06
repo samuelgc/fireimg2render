@@ -140,6 +140,38 @@ def main():
         write_file(DATA_FILES[i] + '.csv', img_stats)
         print "Finished file: {}".format(DATA_FILES[i])
 
+def makeTestData():
+    file_dir = "fireTemp"
+    img_stats = []
+    i = 0
+    for filename in os.listdir(file_dir):
+        # print("Starting" , filename , "Epoch {}".format(i))
+        fire_img = Image.open(file_dir + '/' + filename)
+        fire_mask = mask(fire_img)
+        fire_stats = map_stats(fire_img, fire_mask)
+        #get the temp from filename :D
+        num1 = filename.find("_")
+        num2 = filename.find(".")
+        numReal = filename[num1+1:num2]
+        if len(fire_stats) != 0:
+            fire_stats.append(numReal)
+            img_stats.append(fire_stats)
+        print("Ending" , filename,"Epoch {}".format(i))
+        i +=1
+    write_file(file_dir + '2' + '.csv', img_stats)
+    print "Finished file: {}".format("fireTem")
+
+def stringManipulationTest():
+    file_dir = "fireTemp"
+    img_stats = []
+    i = 0
+    # for filename in os.listdir(file_dir):
+    testStr = "bob_1000.txt"
+    num = testStr.find("_")
+    num2 = testStr.find(".")
+    numReal = testStr[num+1:num2]
+    print (num,num2,numReal)
 
 if __name__== '__main__':
-    main()
+    makeTestData()
+    # stringManipulationTest()

@@ -2,3 +2,9 @@ idea
 idea/*
 render/*
 ifds/*
+*.jpg
+*.JPEG
+*.jpeg
+*.ifd
+*.png
+*.PNG
