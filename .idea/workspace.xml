@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bdd81ca7-80f5-4900-9b10-579abb05ac82" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/param_train.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/train_data/shader_params.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ifds/fire.ifd" beforeDir="false" afterPath="$PROJECT_DIR$/ifds/old_fire.ifd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/render_fire.py" beforeDir="false" afterPath="$PROJECT_DIR$/render_fire.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/param_train.py" beforeDir="false" afterPath="$PROJECT_DIR$/param_train.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -16,21 +15,31 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="render_fire.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/render_fire.py">
+      <file leaf-file-name="param_train.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/param_train.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
-              <caret line="133" lean-forward="true" selection-start-line="133" selection-end-line="133" />
+            <state relative-caret-position="565">
+              <caret line="96" column="52" lean-forward="true" selection-start-line="96" selection-start-column="52" selection-end-line="96" selection-end-column="52" />
+              <folding>
+                <element signature="e#0#27#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="param_train.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/param_train.py">
+      <file leaf-file-name="shader_params.csv" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/train_data/shader_params.csv">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="385">
-              <caret line="151" column="27" lean-forward="true" selection-start-line="151" selection-start-column="27" selection-end-line="151" selection-end-column="27" />
+            <state relative-caret-position="45">
+              <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
             </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="extra.csv" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/train_data/extra.csv">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-986" />
           </provider>
         </entry>
       </file>
@@ -44,17 +53,8 @@
       <file leaf-file-name="mask_fire.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mask_fire.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="90" column="26" selection-start-line="90" selection-start-column="26" selection-end-line="90" selection-end-column="26" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="old_fire.ifd" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ifds/old_fire.ifd">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="504">
-              <caret line="4063" column="103" selection-start-line="4063" selection-start-column="47" selection-end-line="4063" selection-end-column="103" />
+            <state>
+              <caret column="9" lean-forward="true" selection-start-column="9" selection-end-line="1" selection-end-column="10" />
             </state>
           </provider>
         </entry>
@@ -90,8 +90,9 @@
         <option value="$PROJECT_DIR$/ifds/render_fire.ifd" />
         <option value="$PROJECT_DIR$/ifds/fire.ifd" />
         <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/param_train.py" />
         <option value="$PROJECT_DIR$/render_fire.py" />
+        <option value="$PROJECT_DIR$/train_data/shader_params.csv" />
+        <option value="$PROJECT_DIR$/param_train.py" />
       </list>
     </option>
   </component>
@@ -118,6 +119,11 @@
               <item name="FireImg_Render" type="b2602c69:ProjectViewProjectNode" />
               <item name="FireImg_Render" type="462c0819:PsiDirectoryNode" />
               <item name="ifds" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="FireImg_Render" type="b2602c69:ProjectViewProjectNode" />
+              <item name="FireImg_Render" type="462c0819:PsiDirectoryNode" />
+              <item name="train_data" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -214,7 +220,7 @@
     <frame x="1679" y="0" width="1602" height="1200" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18960051" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18960051" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32991612" />
@@ -222,7 +228,7 @@
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="7" visible="true" weight="0.32991612" />
+      <window_info anchor="bottom" id="Terminal" order="7" visible="true" weight="0.32991612" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -238,21 +244,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/render_fire.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="975">
-          <caret line="65" column="38" lean-forward="true" selection-start-line="65" selection-start-column="38" selection-end-line="65" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ifds/old_fire.ifd">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="130305">
-          <caret line="3557" column="12" selection-start-line="3557" selection-start-column="4" selection-end-line="3557" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ifds/render_fire.ifd" />
     <entry file="file://$PROJECT_DIR$/render_fire.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="990">
@@ -541,13 +532,6 @@
         <state relative-caret-position="-538525" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mask_fire.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="90" column="26" selection-start-line="90" selection-start-column="26" selection-end-line="90" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ifds/old_fire.ifd">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="504">
@@ -555,17 +539,48 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/param_train.py">
+    <entry file="file://$PROJECT_DIR$/image_scraper.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="385">
-          <caret line="151" column="27" lean-forward="true" selection-start-line="151" selection-start-column="27" selection-end-line="151" selection-end-column="27" />
+        <state relative-caret-position="-135">
+          <folding>
+            <element signature="e#0#21#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/render_fire.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="133" lean-forward="true" selection-start-line="133" selection-end-line="133" />
+        <state relative-caret-position="240">
+          <caret line="113" column="32" lean-forward="true" selection-start-line="113" selection-start-column="32" selection-end-line="113" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/train_data/extra.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-986" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/train_data/shader_params.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mask_fire.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="9" lean-forward="true" selection-start-column="9" selection-end-line="1" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/param_train.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="565">
+          <caret line="96" column="52" lean-forward="true" selection-start-line="96" selection-start-column="52" selection-end-line="96" selection-end-column="52" />
+          <folding>
+            <element signature="e#0#27#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

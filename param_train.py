@@ -1,162 +1,119 @@
-import random
-import math
 from subprocess import call
+from PIL import Image
 
-from mask_fire import *
+import tensorflow as tf
+import numpy as np
+import random
+import csv
+import os
 
-numero = 0
 
-def l_relu(x):
-    result = []
-    for i in range(len(x)):
-        if x[i] <= 0:
-            result.append(0.01 * x[i])
+class ParamLearner:
+    input_size = [None, 256, 256, 3]
+    output_size = [None, 10]
+    model_directory = '.\models\param_learner_model'
+
+    def __init__(self):
+        gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.333)
+        self.sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
+        self.input = tf.placeholder(tf.float32, self.input_size, name='input')
+        self.target = tf.placeholder(tf.float32, self.output_size, name='target')
+
+        #Convolutional layers
+        conv0 = tf.layers.conv2d(self.input, 64, 3, padding="same", activation=tf.nn.relu, name='conv0')
+        pool0 = tf.layers.max_pooling2d(conv0, 2, 2, padding="same", name='pool0')
+        conv1 = tf.layers.conv2d(pool0, 32, 3, padding="same", activation=tf.nn.relu, name='conv1')
+        pool1 = tf.layers.max_pooling2d(conv1, 2, 2, padding="same", name='pool1')
+        conv2 = tf.layers.conv2d(pool1, 16, 3, padding="same", activation=tf.nn.relu, name='conv2')
+        pool2 = tf.layers.max_pooling2d(conv2, 2, 2, padding="same", name='pool2')
+
+        #Dense layers
+        flat = tf.reshape(pool2, [-1])
+        dense0 = tf.layers.dense(flat, units=1024, activation=tf.nn.relu, name='dense0')
+        dense1 = tf.layers.dense(dense0, units=512, activation=tf.nn.relu, name='dense1')
+        self.output = tf.layers.dense(dense1, units=10, activation=tf.nn.sigmoid, name='output')
+
+        self.loss = tf.reduce_sum(tf.abs(self.target - self.output), name='loss')
+        self.cost = tf.reduce_mean(self.loss)
+        self.train = tf.train.AdamOptimizer().minimize(self.cost, name='train')
+
+        tf.add_to_collection('input', self.input)
+        tf.add_to_collection('target', self.target)
+        tf.add_to_collection('output', self.output)
+        tf.add_to_collection('loss', self.loss)
+        tf.add_to_collection('cost', self.cost)
+        tf.add_to_collection('train', self.train)
+        self.saver = tf.train.Saver()
+
+    def train(self, input_data, load_existing_model=True):
+        self.sess.run(tf.global_variables_initializer())
+        if load_existing_model and os.path.exists(self.model_directory):
+            self.load_trained_model()
         else:
-            result.append(x[i] * (x[i] > 0))
-    return result
+            self.sess.run(tf.global_variables_initializer())
+
+        for epoch in range(100):
+            count = 0
+            try:
+                params = input_data[count]
+                if epoch == 0:
+                    with open('./ifds/fire.ifd') as f:
+                        search_string = "fc_colorramp_the_basis_strings ( \"linear\" \"linear\" ) fc_colorramp_the_key_positions ( 0 1 ) fc_colorramp_the_key_values ( 0 0 0 1 1 1 )"
+                        replace_string = "s_densityscale {} s_int {} s_color {} {} {} fi_int {} fc_int {} fc_colorramp_the_basis_strings ( \"linear\" \"linear\" ) fc_colorramp_the_key_positions ( 0 1 ) fc_colorramp_the_key_values ( 0 0 0 1 1 1 ) fc_bbtemp {} fc_bbadapt {} fc_bbburn {}" \
+                            .format(params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7], params[8], params[9])
+                        contents = f.read().replace(search_string, replace_string)
+                    with open('./ifds/render_fire_{}_{}.ifd'.format(epoch, count), "w+") as f:
+                        f.write(contents)
+                    call(["mantra", "./ifds/render_fire_{}_{}.ifd".format(epoch, count), "./render/render_{}_{}.jpg".format(count)])
+                img = Image.open("./render/render_{}_{}.jpg".format(count))
+                img_in = np.asarray(img)
+                feed_dict = {self.input: img_in, self.target: params}
+                loss, _ = self.sess.run([self.cost, self.output], feed_dict=feed_dict)
+                count += 1
+            except Exception as fail:
+                continue
+            finally:
+                self.save_trained_model()
+
+    def save_trained_model(self):
+        self.saver.save(self.sess, os.path.join(self.model_directory, 'model'))
+
+    def load_trained_model(self):
+        self.saver.restore(self.sess, tf.train.latest_checkpoint(self.model_directory))
 
 
-def d_lrelu(x):
-    result = []
-    for i in range(len(x)):
-        if x[i] <= 0:
-            result.append(0.01)
-        else:
-            result.append(1.0)
-    return result
+def generate_samples(size):
+    samples = []
+    for count in range(size):
+        sample = []
+        #Generate shader parameters randomly
+        sample.append(random.uniform(0, 2))             # Density Scale
+        sample.append(random.uniform(0, 2))             # Smoke Brightness
+        smoke_color = random.random()                   # Smoke Color
+        sample.append(smoke_color)
+        sample.append(smoke_color)
+        sample.append(smoke_color)
+        sample.append(random.uniform(0, 5))             # Intensity Scale
+        sample.append(random.uniform(0, 5))             # Temperature Scale
+        sample.append(int(random.uniform(0, 15000)))    # Color Temp in Kelvin
+        sample.append(random.random())                  # Adaption
+        sample.append(random.uniform(-2, 2))            # Burn
+        samples.append(sample)
+    return samples
 
 
-def sigmoid(x):
-    result = []
-    for num in x:
-        result.append(1 / (1 + math.exp(-num)))
-    return result
-
-
-def d_sigmoid(x):
-    result = x * (1-x)
-    return result
-
-
-class MLP:
-    """
-    Multi Layer Perceptron
-    Usage: args is the shape of the model
-    i.e. [ 3, 4, 4, 2 ] is an MLP with 3 inputs two hidden layers of 4 each and 2 outputs
-    """
-    def __init__(self, *args):
-        self.shape = args
-        n = len(args)
-
-        # Build layers
-        self.layers =[]
-        self.layers.append(np.ones(self.shape[0]+1))
-        for i in range(1,n):
-            self.layers.append(np.ones(self.shape[i]))
-
-        # Build weights
-        self.weights = []
-        for i in range(n-1):
-            self.weights.append(np.zeros((self.layers[i].size,
-                                          self.layers[i+1].size)))
-
-        # Last change in weights for momentum
-        self.dw = [0,]*len(self.weights)
-
-        # Reset weights
-        self.reset(0.1)
-
-    def reset(self, wid):
-        for i in range(len(self.weights)):
-            Z = np.random.random((self.layers[i].size, self.layers[i+1].size))
-            self.weights[i][...] = (2*Z-1)*wid
-
-    def step_forward(self, data):
-        self.layers[0][0:-1] = data
-
-        # for i in range(1,len(self.shape)):
-        #     self.layers[i][...] = l_relu(np.dot(self.layers[i-1], self.weights[i-1]))
-
-        shapelen = len(self.shape)
-        for i in range(1, len(self.shape) - 1):
-            self.layers[i][...] = l_relu(np.dot(self.layers[i - 1], self.weights[i - 1]))
-        self.layers[shapelen - 1][...] = sigmoid(np.dot(self.layers[shapelen - 2], self.weights[shapelen - 2]))
-
-        return self.layers[-1]
-
-    def backprop(self, target, rate=0.1, mom=0.1):
-        deltas = []
-
-        error = np.mean(self.layers[0] - target) * -1.0
-        delta = error * np.array(d_sigmoid(self.layers[-1]))
-        deltas.append(delta)
-
-        # Compute error
-        for i in range(len(self.shape)-2, 0, -1):
-            delta = np.dot(deltas[0], self.weights[i].T) * d_lrelu(self.layers[i])
-            deltas.insert(0, delta)
-
-        # Update weights
-        for i in range(len(self.weights)):
-            layer = np.atleast_2d(self.layers[i])
-            delta = np.atleast_2d(deltas[i])
-            dw = np.dot(layer.T, delta)
-            self.weights[i] += rate * dw + mom * self.dw[i]
-            self.dw[i] = dw
-
-        return error
-
-    def train(self, data, epochs=1000, lrate=0.1, mome=0.1):
-        for e in range(epochs):
-            n = np.random.randint(len(data))
-            temp = self.step_forward(data[n])
-            fire_stats, heat = map_render(temp)
-            fire_stats.append(1)
-            error = self.backprop(fire_stats, rate=lrate, mom=mome)
-            print "Epoch {}: Temperature output: {}, with an error of {}".format(e, heat, error)
-
-    def predict(self, img):
-        fire_mask = mask(img)
-        fire_data = map_stats(img, fire_mask)
-        return self.step_forward(fire_data)
-
-
-def render(heat):
-    # Render the image...
-    global numero
-    numero = numero + 1
-    with open('./ifds/fire.ifd') as f:
-        search_string = "fc_colorramp_the_basis_strings ( \"linear\" \"linear\" ) fc_colorramp_the_key_positions ( 0 1 ) fc_colorramp_the_key_values ( 0 0 0 1 1 1 )"
-        replace_string = "s_densityscale {} s_int {} s_color {} {} {} fi_int {} fc_int {} fc_colorramp_the_basis_strings ( \"linear\" \"linear\" ) fc_colorramp_the_key_positions ( 0 1 ) fc_colorramp_the_key_values ( 0 0 0 1 1 1 ) fc_bbtemp {} fc_bbadapt {} fc_bbburn {}"\
-            .format(dense_scale, smoke_bright, smoke_r, smoke_g, smoke_b, intensity, temp_scale, kelvin, adaption, burn)
-        contents = f.read().replace('fc_bbtemp = 5000', 'fc_bbtemp = ' + str(heat))
-    with open('./ifds/render_fire_{}.ifd'.format(numero), "w+") as f:
-        f.write(contents)
-    call(["mantra", "./ifds/render_fire_{}.ifd".format(numero), "./render/render_{}.jpg".format(numero)])
-
-
-def map_render(temperature):
-    heat = temperature[0]
-    if heat < 0:
-        heat = 0
-    if heat > 1:
-        heat = 1
-    heat *= 25000
-    render(heat)
-
-    fire_img = Image.open("./render/render_{}.jpg".format(numero))
-    fire_mask = mask(fire_img)
-    fire_stats = map_stats(fire_img, fire_mask)
-    for i in range(len(fire_stats)):
-        fire_stats[i] /= 25000
-    return fire_stats, heat
+def create_training_file(size=100):
+    with open('./train_data/shader_params.csv', "w+") as f:
+        writer = csv.writer(f)
+        writer.writerows(generate_samples(size))
+        f.close()
 
 
 def main():
-    learner = MLP(9, 20, 30, 20, 1)
-    # Train
-    data = np.loadtxt('./train_data/normalized/google_fire.csv', delimiter=",")
-    learner.train(data, 1000, 0.1, 0)
+    param_learner = ParamLearner()
+    generate_samples(100)
+    data = np.loadtxt('./train_data/shader_params.csv', delimiter=",")
+    param_learner.train(input_data=data)
 
 
 if __name__ == '__main__':
