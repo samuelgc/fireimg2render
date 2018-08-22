@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bdd81ca7-80f5-4900-9b10-579abb05ac82" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/param_train.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ifds/fire.ifd" beforeDir="false" afterPath="$PROJECT_DIR$/ifds/old_fire.ifd" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/render_fire.py" beforeDir="false" afterPath="$PROJECT_DIR$/render_fire.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -16,17 +19,17 @@
       <file leaf-file-name="render_fire.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/render_fire.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="474">
-              <caret line="153" column="11" selection-start-line="153" selection-start-column="11" selection-end-line="153" selection-end-column="11" />
+            <state relative-caret-position="540">
+              <caret line="133" lean-forward="true" selection-start-line="133" selection-end-line="133" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="mask_fire.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mask_fire.py">
+      <file leaf-file-name="param_train.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/param_train.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1200">
-              <caret line="90" column="26" selection-start-line="90" selection-start-column="26" selection-end-line="90" selection-end-column="26" />
+            <state relative-caret-position="385">
+              <caret line="151" column="27" lean-forward="true" selection-start-line="151" selection-start-column="27" selection-end-line="151" selection-end-column="27" />
             </state>
           </provider>
         </entry>
@@ -34,28 +37,47 @@
       <file leaf-file-name="fire.ifd" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ifds/fire.ifd">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-5007">
-              <caret line="1983" column="19" selection-start-line="1983" selection-start-column="13" selection-end-line="1983" selection-end-column="19" />
+            <state relative-caret-position="-538525" />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="mask_fire.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/mask_fire.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="15">
+              <caret line="90" column="26" selection-start-line="90" selection-start-column="26" selection-end-line="90" selection-end-column="26" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="render_fire.ifd" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ifds/render_fire.ifd">
+      <file leaf-file-name="old_fire.ifd" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ifds/old_fire.ifd">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="137895">
-              <caret line="4063" column="368" selection-start-line="4063" selection-start-column="362" selection-end-line="4063" selection-end-column="368" />
+            <state relative-caret-position="504">
+              <caret line="4063" column="103" selection-start-line="4063" selection-start-column="47" selection-end-line="4063" selection-end-column="103" />
             </state>
           </provider>
         </entry>
       </file>
     </leaf>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
   <component name="FindInProjectRecents">
     <findStrings>
       <find>bb</find>
       <find>product8</find>
+      <find>COMPRES</find>
       <find>bbtemp</find>
+      <find>densityscale</find>
+      <find>s_color</find>
+      <find>fc_bbtemp</find>
+      <find>old_fire</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -68,6 +90,7 @@
         <option value="$PROJECT_DIR$/ifds/render_fire.ifd" />
         <option value="$PROJECT_DIR$/ifds/fire.ifd" />
         <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/param_train.py" />
         <option value="$PROJECT_DIR$/render_fire.py" />
       </list>
     </option>
@@ -119,23 +142,59 @@
     </option>
   </component>
   <component name="RunManager">
-    <configuration name="Train" type="PythonConfigurationType" factoryName="Python">
+    <configuration default="true" type="tests" factoryName="Nosetests">
       <module name="FireImg_Render" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="/usr/bin/python2.7" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/render_fire.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
+      <option name="_new_regexPattern" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Twisted Trial">
+      <module name="FireImg_Render" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Unittests">
+      <module name="FireImg_Render" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="py.test">
+      <module name="FireImg_Render" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
     </configuration>
   </component>
   <component name="SvnConfiguration">
@@ -153,11 +212,13 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="1679" y="0" width="1602" height="1200" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18960051" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Version Control" order="7" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32991612" />
+      <window_info anchor="bottom" id="Version Control" order="7" weight="0.32991612" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -165,50 +226,18 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18960051" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Messages" order="7" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Terminal" order="7" visible="true" weight="0.32991612" />
-      <window_info anchor="bottom" id="Python Console" order="7" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/ifds/fire.ifd">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="130305">
-          <caret line="3557" column="12" selection-start-line="3557" selection-start-column="4" selection-end-line="3557" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="17" lean-forward="true" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/render_fire.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="369">
-          <caret line="141" column="48" lean-forward="true" selection-start-line="141" selection-start-column="48" selection-end-line="141" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/render_fire.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="975">
@@ -216,20 +245,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ifds/fire.ifd">
+    <entry file="file://$PROJECT_DIR$/ifds/old_fire.ifd">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="130305">
           <caret line="3557" column="12" selection-start-line="3557" selection-start-column="4" selection-end-line="3557" selection-end-column="12" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ifds/render_fire.ifd">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="137895">
-          <caret line="4063" column="368" selection-start-line="4063" selection-start-column="362" selection-end-line="4063" selection-end-column="368" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/ifds/render_fire.ifd" />
     <entry file="file://$PROJECT_DIR$/render_fire.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="990">
@@ -244,7 +267,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ifds/fire.ifd">
+    <entry file="file://$PROJECT_DIR$/ifds/old_fire.ifd">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="299">
           <caret line="1984" column="13" selection-start-line="1984" selection-start-column="13" selection-end-line="1984" selection-end-column="13" />
@@ -268,13 +291,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ifds/render_fire.ifd">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="137895">
-          <caret line="4063" column="368" selection-start-line="4063" selection-start-column="362" selection-end-line="4063" selection-end-column="368" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/ifds/render_fire.ifd" />
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
@@ -296,7 +313,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ifds/fire.ifd">
+    <entry file="file://$PROJECT_DIR$/ifds/old_fire.ifd">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-5007">
           <caret line="1983" column="19" selection-start-line="1983" selection-start-column="13" selection-end-line="1983" selection-end-column="19" />
@@ -317,7 +334,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ifds/fire.ifd">
+    <entry file="file://$PROJECT_DIR$/ifds/old_fire.ifd">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="299">
           <caret line="1984" column="13" selection-start-line="1984" selection-start-column="13" selection-end-line="1984" selection-end-column="13" />
@@ -331,7 +348,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ifds/fire.ifd">
+    <entry file="file://$PROJECT_DIR$/ifds/old_fire.ifd">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-5007">
           <caret line="1983" column="19" selection-start-line="1983" selection-start-column="13" selection-end-line="1983" selection-end-column="19" />
@@ -376,20 +393,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ifds/fire.ifd">
+    <entry file="file://$PROJECT_DIR$/ifds/old_fire.ifd">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="130305">
           <caret line="3557" column="12" selection-start-line="3557" selection-start-column="4" selection-end-line="3557" selection-end-column="12" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ifds/render_fire.ifd">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="137895">
-          <caret line="4063" column="368" selection-start-line="4063" selection-start-column="362" selection-end-line="4063" selection-end-column="368" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/ifds/render_fire.ifd" />
     <entry file="file://$PROJECT_DIR$/render_fire.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="990">
@@ -404,7 +415,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ifds/fire.ifd">
+    <entry file="file://$PROJECT_DIR$/ifds/old_fire.ifd">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="299">
           <caret line="1984" column="13" selection-start-line="1984" selection-start-column="13" selection-end-line="1984" selection-end-column="13" />
@@ -435,14 +446,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ifds/render_fire.ifd">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="137895">
-          <caret line="4063" column="368" selection-start-line="4063" selection-start-column="362" selection-end-line="4063" selection-end-column="368" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ifds/fire.ifd">
+    <entry file="file://$PROJECT_DIR$/ifds/render_fire.ifd" />
+    <entry file="file://$PROJECT_DIR$/ifds/old_fire.ifd">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="130305">
           <caret line="3557" column="12" selection-start-line="3557" selection-start-column="4" selection-end-line="3557" selection-end-column="12" />
@@ -470,20 +475,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ifds/fire.ifd">
+    <entry file="file://$PROJECT_DIR$/ifds/old_fire.ifd">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="130305">
           <caret line="3557" column="12" selection-start-line="3557" selection-start-column="4" selection-end-line="3557" selection-end-column="12" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ifds/render_fire.ifd">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="137895">
-          <caret line="4063" column="368" selection-start-line="4063" selection-start-column="362" selection-end-line="4063" selection-end-column="368" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/ifds/render_fire.ifd" />
     <entry file="file://$PROJECT_DIR$/render_fire.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="990">
@@ -498,7 +497,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ifds/fire.ifd">
+    <entry file="file://$PROJECT_DIR$/ifds/old_fire.ifd">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="299">
           <caret line="1984" column="13" selection-start-line="1984" selection-start-column="13" selection-end-line="1984" selection-end-column="13" />
@@ -522,38 +521,51 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ifds/render_fire.ifd">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="137895">
-          <caret line="4063" column="368" selection-start-line="4063" selection-start-column="362" selection-end-line="4063" selection-end-column="368" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/ifds/render_fire.ifd" />
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="17" lean-forward="true" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
+        <state relative-caret-position="60">
+          <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mask_fire.py">
+    <entry file="file://$USER_HOME$/HoudiniProjects/fire.geo">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1200">
-          <caret line="90" column="26" selection-start-line="90" selection-start-column="26" selection-end-line="90" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/render_fire.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="474">
-          <caret line="153" column="11" selection-start-line="153" selection-start-column="11" selection-end-line="153" selection-end-column="11" />
+        <state relative-caret-position="15">
+          <caret line="239" column="37" selection-start-line="239" selection-start-column="37" selection-end-line="239" selection-end-column="37" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ifds/fire.ifd">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-5007">
-          <caret line="1983" column="19" selection-start-line="1983" selection-start-column="13" selection-end-line="1983" selection-end-column="19" />
+        <state relative-caret-position="-538525" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mask_fire.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="90" column="26" selection-start-line="90" selection-start-column="26" selection-end-line="90" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ifds/old_fire.ifd">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="504">
+          <caret line="4063" column="103" selection-start-line="4063" selection-start-column="47" selection-end-line="4063" selection-end-column="103" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/param_train.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="385">
+          <caret line="151" column="27" lean-forward="true" selection-start-line="151" selection-start-column="27" selection-end-line="151" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/render_fire.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="540">
+          <caret line="133" lean-forward="true" selection-start-line="133" selection-end-line="133" />
         </state>
       </provider>
     </entry>

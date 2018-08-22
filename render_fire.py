@@ -125,7 +125,7 @@ def render(heat):
     # Render the image...
     global numero
     numero = numero + 1
-    with open('./ifds/fire.ifd') as f:
+    with open('./ifds/old_fire.ifd') as f:
         contents = f.read().replace('fc_bbtemp = 5000', 'fc_bbtemp = ' + str(heat))
     with open('./ifds/render_fire_{}.ifd'.format(numero), "w+") as f:
         f.write(contents)
