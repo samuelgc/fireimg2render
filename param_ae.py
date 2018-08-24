@@ -1,23 +1,23 @@
-from subprocess import call
-from PIL import Image
-
 import tensorflow as tf
 import numpy as np
 import random
 import csv
 
+from subprocess import call
+from PIL import Image
 
-class ParamLearner:
+
+class ParamAutoEncoder:
     input_size = [None, 128, 128, 3]
-    output_size = [None, 10]
+    param_size = [None, 10]
 
     def __init__(self):
         gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.333)
         self.sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
         self.input = tf.placeholder(tf.float32, self.input_size, name='input')
-        self.target = tf.placeholder(tf.float32, self.output_size, name='target')
+        self.target = tf.placeholder(tf.float32, self.param_size, name='target')
 
-        #Convolutional layers
+        #Convolution layers
         conv0 = tf.layers.conv2d(self.input, 64, 3, padding="same", activation=tf.nn.relu, name='conv0')
         pool0 = tf.layers.max_pooling2d(conv0, 2, 2, padding="same", name='pool0')
         conv1 = tf.layers.conv2d(pool0, 48, 3, padding="same", activation=tf.nn.relu, name='conv1')
@@ -26,20 +26,29 @@ class ParamLearner:
         pool2 = tf.layers.max_pooling2d(conv2, 2, 2, padding="same", name='pool2')
 
         #Dense layers
-        flat = tf.layers.flatten(pool2)
+        flat = tf.reshape(pool2, [-1, 16*16*32])
         dense0 = tf.layers.dense(flat, units=1024, activation=tf.nn.relu, name='dense0')
         dense1 = tf.layers.dense(dense0, units=512, activation=tf.nn.relu, name='dense1')
-        self.output = tf.layers.dense(dense1, units=10, name='output')
+        self.encoded = tf.layers.dense(dense1, units=10, name='encoded')
 
-        self.loss = tf.reduce_mean(tf.reduce_sum(tf.abs(self.target - self.output)), name='loss')
-        self.train = tf.train.AdamOptimizer().minimize(self.loss, name='train')
+        #Decoding
+        decode1 = tf.layers.dense(self.encoded, units=1024, activation=tf.nn.relu, name='decode1')
+        decode0 = tf.layers.dense(decode1, units=16*16*32, activation=tf.nn.relu, name='decode0')
 
-        #Summaries
-        self.initial = tf.global_variables_initializer()
-        tf.summary.scalar("loss", self.loss)
-        self.merge = tf.summary.merge_all()
+        # Deconvolution layers
+        blowout = tf.reshape(decode0, [-1, 16, 16, 32])
+        deconv2 = tf.layers.conv2d(blowout, 32, 3, padding="same", activation=tf.nn.relu, name='deconv2')
+        upsamp2 = tf.layers.conv2d_transpose(deconv2, 32, 3, 2, padding="same", name="upsamp2")
+        upsamp1 = tf.layers.conv2d_transpose(upsamp2, 48, 3, 2, padding="same", name='upsamp1')
+        upsamp0 = tf.layers.conv2d_transpose(upsamp1, 64, 3, 2, padding="same", name='upsamp0')
+        self.decoded = tf.layers.conv2d(upsamp0, 3, 3, padding="same", name='decoded')
+
+        self.loss = tf.reduce_sum(tf.abs(self.input - self.decoded), name='loss')
+        self.cost = tf.reduce_mean(self.loss)
+        self.train = tf.train.AdamOptimizer().minimize(self.cost, name='train')
 
     def start_train(self, fresh=True, norm=False, sample_size=500, epochs=1000):
+        self.sess.run(tf.global_variables_initializer())
         if fresh:
             create_training_file(sample_size)
             print "New training file generated"
@@ -49,8 +58,7 @@ class ParamLearner:
             data = np.loadtxt('./train_data/normalized/shader_params.csv', delimiter=",")
         else:
             data = np.loadtxt('./train_data/shader_params.csv', delimiter=",")
-        self.sess.run(self.initial)
-        summary_write = tf.summary.FileWriter('/tmp/logs/graph', graph=tf.get_default_graph())
+        self.sess.run(tf.global_variables_initializer())
         for epoch in range(epochs):
             total_loss = 0
             for count in range(len(data)):
@@ -70,11 +78,11 @@ class ParamLearner:
                     img_in = np.asarray(img)
                     img_in = img_in / 255.0
                     batch_in = []
-                    batch_out = []
                     batch_in.append(img_in)
+                    batch_out = []
                     batch_out.append(params)
                     feed_dict = {self.input: batch_in, self.target: batch_out}
-                    loss, output = self.sess.run([self.loss, self.output], feed_dict=feed_dict)
+                    loss, encoding, output = self.sess.run([self.loss, self.encoded, self.decoded], feed_dict=feed_dict)
                     total_loss += loss
                     count += 1
                 except Exception as fail:
@@ -83,7 +91,6 @@ class ParamLearner:
             if fresh and epoch == 0:
                 print "Image dataset rendered"
             print "Epoch: {} --> Average Loss: {}".format(epoch, total_loss / len(data))
-
 
 def generate_samples(size):
     samples = []
@@ -128,8 +135,8 @@ def normalize_training_file():
 
 
 def main():
-    param_learner = ParamLearner()
-    param_learner.start_train(fresh=False, norm=True)
+    auto_encoder = ParamAutoEncoder()
+    auto_encoder.start_train(fresh=False, norm=True)
 
 
 if __name__ == '__main__':

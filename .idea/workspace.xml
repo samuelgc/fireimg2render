@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bdd81ca7-80f5-4900-9b10-579abb05ac82" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/train_data/shader_params.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/param_ae.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/param_train.py" beforeDir="false" afterPath="$PROJECT_DIR$/param_train.py" afterDir="false" />
     </list>
@@ -18,8 +18,8 @@
       <file leaf-file-name="param_train.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/param_train.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="565">
-              <caret line="96" column="52" lean-forward="true" selection-start-line="96" selection-start-column="52" selection-end-line="96" selection-end-column="52" />
+            <state relative-caret-position="450">
+              <caret line="54" column="26" lean-forward="true" selection-start-line="54" selection-start-column="26" selection-end-line="54" selection-end-column="26" />
               <folding>
                 <element signature="e#0#27#0" expanded="true" />
               </folding>
@@ -27,19 +27,15 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="shader_params.csv" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/train_data/shader_params.csv">
+      <file leaf-file-name="param_ae.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/param_ae.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
+            <state relative-caret-position="-45">
+              <caret line="18" selection-start-line="18" selection-end-line="18" />
+              <folding>
+                <element signature="e#0#23#0" expanded="true" />
+              </folding>
             </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="extra.csv" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/train_data/extra.csv">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-986" />
           </provider>
         </entry>
       </file>
@@ -53,8 +49,8 @@
       <file leaf-file-name="mask_fire.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mask_fire.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="9" lean-forward="true" selection-start-column="9" selection-end-line="1" selection-end-column="10" />
+            <state relative-caret-position="-1665">
+              <caret column="9" selection-start-column="9" selection-end-line="1" selection-end-column="10" />
             </state>
           </provider>
         </entry>
@@ -78,10 +74,12 @@
       <find>s_color</find>
       <find>fc_bbtemp</find>
       <find>old_fire</find>
+      <find>, reuse=reuse</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -92,6 +90,7 @@
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/render_fire.py" />
         <option value="$PROJECT_DIR$/train_data/shader_params.csv" />
+        <option value="$PROJECT_DIR$/param_ae.py" />
         <option value="$PROJECT_DIR$/param_train.py" />
       </list>
     </option>
@@ -118,12 +117,13 @@
             <path>
               <item name="FireImg_Render" type="b2602c69:ProjectViewProjectNode" />
               <item name="FireImg_Render" type="462c0819:PsiDirectoryNode" />
-              <item name="ifds" type="462c0819:PsiDirectoryNode" />
+              <item name="train_data" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="FireImg_Render" type="b2602c69:ProjectViewProjectNode" />
               <item name="FireImg_Render" type="462c0819:PsiDirectoryNode" />
               <item name="train_data" type="462c0819:PsiDirectoryNode" />
+              <item name="normalized" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -218,46 +218,68 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="1679" y="0" width="1602" height="1200" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18960051" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18960051" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32991612" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32991612" />
       <window_info anchor="bottom" id="Python Console" order="7" />
-      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32991612" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Terminal" order="7" visible="true" weight="0.32991612" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="7" visible="true" weight="0.3028891" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.39888164" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="bottom" id="Version Control" order="7" weight="0.32991612" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18960051" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32991612" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Messages" order="7" />
       <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Terminal" order="7" visible="true" weight="0.32991612" />
+      <window_info anchor="bottom" id="Python Console" order="7" />
     </layout>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="RECENTLY_FILTERED_USER_GROUPS">
+                <collection />
+              </option>
+              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+                <collection />
+              </option>
+              <option name="COLUMN_ORDER">
+                <list>
+                  <option value="0" />
+                  <option value="1" />
+                  <option value="2" />
+                  <option value="3" />
+                </list>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/render_fire.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="990">
-          <caret line="66" lean-forward="true" selection-start-line="66" selection-end-line="66" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mask_fire.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="84" lean-forward="true" selection-start-line="84" selection-end-line="86" selection-end-column="77" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ifds/old_fire.ifd">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="299">
@@ -541,11 +563,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/image_scraper.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-135">
-          <folding>
-            <element signature="e#0#21#0" expanded="true" />
-          </folding>
-        </state>
+        <state relative-caret-position="-135" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/render_fire.py">
@@ -569,15 +587,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mask_fire.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="9" lean-forward="true" selection-start-column="9" selection-end-line="1" selection-end-column="10" />
+        <state relative-caret-position="-1665">
+          <caret column="9" selection-start-column="9" selection-end-line="1" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/train_data/normalized/shader_params.csv">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/param_ae.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-45">
+          <caret line="18" selection-start-line="18" selection-end-line="18" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/param_train.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="565">
-          <caret line="96" column="52" lean-forward="true" selection-start-line="96" selection-start-column="52" selection-end-line="96" selection-end-column="52" />
+        <state relative-caret-position="450">
+          <caret line="54" column="26" lean-forward="true" selection-start-line="54" selection-start-column="26" selection-end-line="54" selection-end-column="26" />
           <folding>
             <element signature="e#0#27#0" expanded="true" />
           </folding>
