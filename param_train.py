@@ -5,6 +5,10 @@ from data_gen import *
 import tensorflow as tf
 
 
+def lrelu(x, alpha=0.1):
+    return tf.maximum(alpha * x, x)
+
+
 class ParamLearner:
     input_size = [None, 128, 128, 3]
     output_size = [None, 10]
@@ -16,22 +20,24 @@ class ParamLearner:
         self.target = tf.placeholder(tf.float32, self.output_size, name='target')
 
         #Convolutional layers
-        conv0 = tf.layers.conv2d(self.input, 64, 5, padding="same", activation=tf.nn.relu, name='conv0')
+        conv0 = tf.layers.conv2d(self.input, 64, 5, padding="same", activation=lrelu, name='conv0')
         pool0 = tf.layers.max_pooling2d(conv0, 2, 2, padding="same", name='pool0')
-        conv1 = tf.layers.conv2d(pool0, 48, 5, padding="same", activation=tf.nn.relu, name='conv1')
+        conv1 = tf.layers.conv2d(pool0, 48, 5, padding="same", activation=lrelu, name='conv1')
         pool1 = tf.layers.max_pooling2d(conv1, 2, 2, padding="same", name='pool1')
-        conv2 = tf.layers.conv2d(pool1, 32, 5, padding="same", activation=tf.nn.relu, name='conv2')
+        conv2 = tf.layers.conv2d(pool1, 32, 5, padding="same", activation=lrelu, name='conv2')
         pool2 = tf.layers.max_pooling2d(conv2, 2, 2, padding="same", name='pool2')
 
         #Dense layers
         flat = tf.layers.flatten(pool2)
-        dense0 = tf.layers.dense(flat, units=2048, activation=tf.nn.relu, name='dense0')
-        dense1 = tf.layers.dense(dense0, units=1024, activation=tf.nn.relu, name='dense1')
-        dense2 = tf.layers.dense(dense1, units=512, activation=tf.nn.relu, name='dense2')
+        dense0 = tf.layers.dense(flat, units=2048, activation=lrelu, name='dense0')
+        dense1 = tf.layers.dense(dense0, units=1024, activation=lrelu, name='dense1')
+        dense2 = tf.layers.dense(dense1, units=512, activation=lrelu, name='dense2')
         self.output = tf.layers.dense(dense2, units=10, name='output')
 
-        self.loss = tf.reduce_sum(tf.abs(self.target - self.output), name='loss')
-        self.cost = tf.reduce_mean(self.loss)
+        #Loss
+        self.diff = tf.squared_difference(self.target, self.output)
+        self.loss = tf.reduce_sum(self.diff, name='loss')
+        self.cost = tf.reduce_mean(self.diff)
         self.train = tf.train.AdamOptimizer().minimize(self.cost, name='train')
 
         #Summaries
@@ -42,7 +48,7 @@ class ParamLearner:
         tf.summary.scalar("loss", self.loss)
         self.merge = tf.summary.merge_all()
 
-    def start_train(self, fresh=True, norm=False, sample_size=500, batch_size=10, epochs=1000):
+    def start_train(self, fresh=True, norm=False, sample_size=500, batch_size=10):
         if fresh:
             create_training_file(sample_size)
             print "New training file generated"
@@ -56,7 +62,10 @@ class ParamLearner:
         self.sess.run(self.initial)
         summary_write = tf.summary.FileWriter('/tmp/logs/one_log', graph=tf.get_default_graph())
 
-        for epoch in range(epochs):
+        change_count = 0
+        last_mse = 0
+        epoch = 0
+        while change_count < 7:
             sample_set = np.arange(sample_size)
             if (fresh and epoch > 0) or not fresh:
                 np.random.shuffle(sample_set)
@@ -68,7 +77,7 @@ class ParamLearner:
                 if batch_count >= batch_size:
                     try:
                         feed_dict = {self.input: batch_in, self.target: batch_out}
-                        summary, loss, output, _ = self.sess.run([self.merge, self.loss, self.output, self.train], feed_dict=feed_dict)
+                        summary, loss, output, _ = self.sess.run([self.merge, self.cost, self.output, self.train], feed_dict=feed_dict)
                         summary_write.add_summary(summary, epoch)
                         total_loss += loss
                         batch_count = 0
@@ -99,18 +108,27 @@ class ParamLearner:
             if len(batch_in) > 0:
                 try:
                     feed_dict = {self.input: batch_in, self.target: batch_out}
-                    loss, output, _ = self.sess.run([self.loss, self.output, self.train], feed_dict=feed_dict)
+                    loss, output, _ = self.sess.run([self.cost, self.output, self.train], feed_dict=feed_dict)
                     total_loss += loss
                 except Exception as fail:
                     continue
+
             if fresh and epoch == 0:
                 print "Image dataset rendered"
-            print "Epoch: {} --> Average Loss: {}".format(epoch, total_loss / len(data))
+
+            epoch += 1
+            mse = total_loss / len(data)
+            if abs(mse - last_mse) < 0.0002:
+                change_count += 1
+            else:
+                change_count = 0
+            last_mse = mse
+            print "Epoch: {} --> Average Loss: {}".format(epoch, mse)
 
 
 def main():
     param_learner = ParamLearner()
-    param_learner.start_train(fresh=False, norm=False)
+    param_learner.start_train(fresh=False, norm=True)
 
 
 if __name__ == '__main__':

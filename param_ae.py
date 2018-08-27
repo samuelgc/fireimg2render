@@ -5,6 +5,10 @@ from PIL import Image
 from data_gen import *
 
 
+def lrelu(x, alpha=0.1):
+    return tf.maximum(alpha * x, x)
+
+
 class ParamAutoEncoder:
     input_size = [None, 128, 128, 3]
     param_size = [None, 10]
@@ -16,42 +20,44 @@ class ParamAutoEncoder:
         self.target = tf.placeholder(tf.float32, self.param_size, name='target')
 
         #Convolution layers
-        conv0 = tf.layers.conv2d(self.input, 64, 3, padding="same", activation=tf.nn.relu, name='conv0')
+        conv0 = tf.layers.conv2d(self.input, 64, 3, padding="same", activation=lrelu, name='conv0')
         pool0 = tf.layers.max_pooling2d(conv0, 2, 2, padding="same", name='pool0')
-        conv1 = tf.layers.conv2d(pool0, 48, 3, padding="same", activation=tf.nn.relu, name='conv1')
+        conv1 = tf.layers.conv2d(pool0, 48, 3, padding="same", activation=lrelu, name='conv1')
         pool1 = tf.layers.max_pooling2d(conv1, 2, 2, padding="same", name='pool1')
-        conv2 = tf.layers.conv2d(pool1, 32, 3, padding="same", activation=tf.nn.relu, name='conv2')
+        conv2 = tf.layers.conv2d(pool1, 32, 3, padding="same", activation=lrelu, name='conv2')
         pool2 = tf.layers.max_pooling2d(conv2, 2, 2, padding="same", name='pool2')
 
         #Dense layers
         flat = tf.reshape(pool2, [-1, 16*16*32])
-        dense0 = tf.layers.dense(flat, units=1024, activation=tf.nn.relu, name='dense0')
-        dense1 = tf.layers.dense(dense0, units=512, activation=tf.nn.relu, name='dense1')
+        dense0 = tf.layers.dense(flat, units=1024, activation=lrelu, name='dense0')
+        dense1 = tf.layers.dense(dense0, units=512, activation=lrelu, name='dense1')
         self.encoded = tf.layers.dense(dense1, units=10, name='encoded')
 
         #Decoding
-        decode1 = tf.layers.dense(self.encoded, units=1024, activation=tf.nn.relu, name='decode1')
-        decode0 = tf.layers.dense(decode1, units=16*16*32, activation=tf.nn.relu, name='decode0')
+        decode1 = tf.layers.dense(self.encoded, units=1024, activation=lrelu, name='decode1')
+        decode0 = tf.layers.dense(decode1, units=16*16*32, activation=lrelu, name='decode0')
 
-        # Deconvolution layers
+        #Deconvolution layers
         blowout = tf.reshape(decode0, [-1, 16, 16, 32])
-        deconv2 = tf.layers.conv2d(blowout, 32, 3, padding="same", activation=tf.nn.relu, name='deconv2')
+        deconv2 = tf.layers.conv2d(blowout, 32, 3, padding="same", activation=lrelu, name='deconv2')
         upsamp2 = tf.layers.conv2d_transpose(deconv2, 32, 3, 2, padding="same", name="upsamp2")
         upsamp1 = tf.layers.conv2d_transpose(upsamp2, 48, 3, 2, padding="same", name='upsamp1')
         upsamp0 = tf.layers.conv2d_transpose(upsamp1, 64, 3, 2, padding="same", name='upsamp0')
         self.decoded = tf.layers.conv2d(upsamp0, 3, 3, padding="same", name='decoded')
 
-        self.loss = tf.reduce_sum(tf.abs(self.input - self.decoded), name='loss')
-        self.cost = tf.reduce_mean(self.loss)
+        #Loss
+        self.diff = tf.squared_difference(self.input, self.decoded)
+        self.loss = tf.reduce_sum(self.diff, name='loss')
+        self.cost = tf.reduce_mean(self.diff)
         self.train = tf.train.AdamOptimizer().minimize(self.cost, name='train')
 
-        # Summaries
+        #Summaries
         self.initial = tf.global_variables_initializer()
         tf.summary.image("input", self.input)
         tf.summary.image("result", self.decoded)
         tf.summary.tensor_summary("target", self.target)
         tf.summary.tensor_summary("output", self.encoded)
-        tf.summary.scalar("loss", self.loss)
+        tf.summary.scalar("loss", self.cost)
         self.merge = tf.summary.merge_all()
 
     def start_train(self, fresh=True, norm=False, sample_size=500, batch_size=10, epochs=1000):
@@ -80,7 +86,7 @@ class ParamAutoEncoder:
                 if batch_count >= batch_size:
                     try:
                         feed_dict = {self.input: batch_in, self.target: batch_out}
-                        summary, loss, encoding, output, _ = self.sess.run([self.merge, self.loss, self.encoded, self.decoded, self.train], feed_dict=feed_dict)
+                        summary, loss, _ = self.sess.run([self.merge, self.loss, self.train], feed_dict=feed_dict)
                         summary_write.add_summary(summary, epoch)
                         total_loss += loss
                         batch_count = 0
@@ -103,7 +109,7 @@ class ParamAutoEncoder:
                     img = Image.open("./render/render_{}.jpg".format(item))
                     img.thumbnail((128, 128), Image.ANTIALIAS)
                     img_in = np.asarray(img)
-                    img_in = img_in / 255.0
+                    img_in /= 255.0
                     count += 1
                     batch_in.append(img_in)
                     batch_out.append(params)
@@ -111,10 +117,11 @@ class ParamAutoEncoder:
             if len(batch_in) > 0:
                 try:
                     feed_dict = {self.input: batch_in, self.target: batch_out}
-                    loss, output, _ = self.sess.run([self.loss, self.output, self.train], feed_dict=feed_dict)
+                    loss, _ = self.sess.run([self.loss, self.train], feed_dict=feed_dict)
                     total_loss += loss
                 except Exception as fail:
                     continue
+
             if fresh and epoch == 0:
                 print "Image dataset rendered"
             print "Epoch: {} --> Average Loss: {}".format(epoch, total_loss / len(data))
