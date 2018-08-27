@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bdd81ca7-80f5-4900-9b10-579abb05ac82" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/param_ae.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/param_train.py" beforeDir="false" afterPath="$PROJECT_DIR$/param_train.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/param_ae.py" beforeDir="false" afterPath="$PROJECT_DIR$/param_ae.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -15,11 +13,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="param_train.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="param_train.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/param_train.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="450">
-              <caret line="54" column="26" lean-forward="true" selection-start-line="54" selection-start-column="26" selection-end-line="54" selection-end-column="26" />
+            <state relative-caret-position="549">
+              <caret line="93" column="38" lean-forward="true" selection-start-line="93" selection-start-column="38" selection-end-line="93" selection-end-column="38" />
               <folding>
                 <element signature="e#0#27#0" expanded="true" />
               </folding>
@@ -27,11 +25,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="param_ae.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="param_ae.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/param_ae.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-45">
-              <caret line="18" selection-start-line="18" selection-end-line="18" />
+            <state relative-caret-position="325">
+              <caret line="63" column="12" selection-start-line="63" selection-start-column="12" selection-end-line="63" selection-end-column="12" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -90,8 +88,8 @@
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/render_fire.py" />
         <option value="$PROJECT_DIR$/train_data/shader_params.csv" />
-        <option value="$PROJECT_DIR$/param_ae.py" />
         <option value="$PROJECT_DIR$/param_train.py" />
+        <option value="$PROJECT_DIR$/param_ae.py" />
       </list>
     </option>
   </component>
@@ -113,17 +111,6 @@
             <path>
               <item name="FireImg_Render" type="b2602c69:ProjectViewProjectNode" />
               <item name="FireImg_Render" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="FireImg_Render" type="b2602c69:ProjectViewProjectNode" />
-              <item name="FireImg_Render" type="462c0819:PsiDirectoryNode" />
-              <item name="train_data" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="FireImg_Render" type="b2602c69:ProjectViewProjectNode" />
-              <item name="FireImg_Render" type="462c0819:PsiDirectoryNode" />
-              <item name="train_data" type="462c0819:PsiDirectoryNode" />
-              <item name="normalized" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -218,6 +205,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="1679" y="0" width="1602" height="1200" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18960051" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -280,6 +268,16 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/param_ae.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="525">
+          <caret line="99" column="38" selection-start-line="99" selection-start-column="38" selection-end-line="99" selection-end-column="38" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/ifds/old_fire.ifd">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="299">
@@ -592,13 +590,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/train_data/normalized/shader_params.csv">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/param_ae.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-45">
-          <caret line="18" selection-start-line="18" selection-end-line="18" />
+        <state relative-caret-position="325">
+          <caret line="63" column="12" selection-start-line="63" selection-start-column="12" selection-end-line="63" selection-end-column="12" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
@@ -607,8 +602,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/param_train.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="54" column="26" lean-forward="true" selection-start-line="54" selection-start-column="26" selection-end-line="54" selection-end-column="26" />
+        <state relative-caret-position="549">
+          <caret line="93" column="38" lean-forward="true" selection-start-line="93" selection-start-column="38" selection-end-line="93" selection-end-column="38" />
           <folding>
             <element signature="e#0#27#0" expanded="true" />
           </folding>

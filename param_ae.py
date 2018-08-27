@@ -59,7 +59,11 @@ class ParamAutoEncoder:
         else:
             data = np.loadtxt('./train_data/shader_params.csv', delimiter=",")
         self.sess.run(tf.global_variables_initializer())
+
         for epoch in range(epochs):
+            sample_set = np.arange(sample_size)
+            if (fresh and epoch > 0) or not fresh:
+                np.random.shuffle(sample_set)
             total_loss = 0
             batch_count = 0
             batch_in = []
@@ -76,23 +80,25 @@ class ParamAutoEncoder:
                     except Exception as fail:
                         continue
                 else:
-                    params = data[count]
+                    item = sample_set[count]
+                    params = data[item]
                     if fresh and epoch == 0:
                         with open('./ifds/fire.ifd') as f:
                             search_string = "fc_colorramp_the_basis_strings ( \"linear\" \"linear\" ) fc_colorramp_the_key_positions ( 0 1 ) fc_colorramp_the_key_values ( 0 0 0 1 1 1 )"
                             replace_string = "s_densityscale {} s_int {} s_color {} {} {} fi_int {} fc_int {} fc_colorramp_the_basis_strings ( \"linear\" \"linear\" ) fc_colorramp_the_key_positions ( 0 1 ) fc_colorramp_the_key_values ( 0 0 0 1 1 1 ) fc_bbtemp {} fc_bbadapt {} fc_bbburn {}" \
                                 .format(params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7], params[8], params[9])
                             contents = f.read().replace(search_string, replace_string)
-                        with open('./ifds/render_fire_{}_{}.ifd'.format(epoch, count), "w+") as f:
+                        with open('./ifds/render_fire_{}_{}.ifd'.format(epoch, item), "w+") as f:
                             f.write(contents)
-                        call(["mantra", "./ifds/render_fire_{}_{}.ifd".format(epoch, count), "./render/render_{}.jpg".format(count)])
-                    img = Image.open("./render/render_{}.jpg".format(count))
+                        call(["mantra", "./ifds/render_fire_{}_{}.ifd".format(epoch, item), "./render/render_{}.jpg".format(item)])
+                    img = Image.open("./render/render_{}.jpg".format(item))
                     img.thumbnail((128, 128), Image.ANTIALIAS)
                     img_in = np.asarray(img)
                     img_in = img_in / 255.0
+                    count += 1
                     batch_in.append(img_in)
                     batch_out.append(params)
-                    count += 1
+                    batch_count += 1
             if len(batch_in) > 0:
                 try:
                     feed_dict = {self.input: batch_in, self.target: batch_out}
