@@ -46,7 +46,7 @@ class ParamAutoEncoder:
         self.decoded = tf.layers.conv2d(upsamp0, 3, 3, padding="same", name='decoded')
 
         #Loss
-        self.diff = tf.squared_difference(self.input, self.decoded)
+        self.diff = tf.square(self.input - self.decoded)
         self.loss = tf.reduce_sum(self.diff, name='loss')
         self.cost = tf.reduce_mean(self.diff)
         self.train = tf.train.AdamOptimizer().minimize(self.cost, name='train')
@@ -55,6 +55,8 @@ class ParamAutoEncoder:
         self.initial = tf.global_variables_initializer()
         tf.summary.image("input", self.input)
         tf.summary.image("result", self.decoded)
+        tf.summary.scalar("min", tf.reduce_min(self.decoded))
+        tf.summary.scalar("max", tf.reduce_max(self.decoded))
         tf.summary.tensor_summary("target", self.target)
         tf.summary.tensor_summary("output", self.encoded)
         tf.summary.scalar("loss", self.cost)
@@ -109,7 +111,7 @@ class ParamAutoEncoder:
                     img = Image.open("./render/render_{}.jpg".format(item))
                     img.thumbnail((128, 128), Image.ANTIALIAS)
                     img_in = np.asarray(img)
-                    img_in /= 255.0
+                    img_in = img_in / 255.0
                     count += 1
                     batch_in.append(img_in)
                     batch_out.append(params)
