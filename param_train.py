@@ -31,15 +31,16 @@ class ParamLearner:
         dense1 = tf.layers.dense(dense0, units=512, activation=tf.nn.relu, name='dense1')
         self.output = tf.layers.dense(dense1, units=10, name='output')
 
-        self.loss = tf.reduce_mean(tf.reduce_sum(tf.abs(self.target - self.output)), name='loss')
-        self.train = tf.train.AdamOptimizer().minimize(self.loss, name='train')
+        self.loss = tf.reduce_sum(tf.abs(self.target - self.output), name='loss')
+        self.cost = tf.reduce_mean(self.loss)
+        self.train = tf.train.AdamOptimizer().minimize(self.cost, name='train')
 
         #Summaries
         self.initial = tf.global_variables_initializer()
-        tf.summary.scalar("loss", self.loss)
-        self.merge = tf.summary.merge_all()
+        # tf.summary.scalar("loss", self.loss)
+        # self.merge = tf.summary.merge_all()
 
-    def start_train(self, fresh=True, norm=False, sample_size=500, epochs=1000):
+    def start_train(self, fresh=True, norm=False, sample_size=500, batch_size=10, epochs=1000):
         if fresh:
             create_training_file(sample_size)
             print "New training file generated"
@@ -50,11 +51,24 @@ class ParamLearner:
         else:
             data = np.loadtxt('./train_data/shader_params.csv', delimiter=",")
         self.sess.run(self.initial)
-        summary_write = tf.summary.FileWriter('/tmp/logs/graph', graph=tf.get_default_graph())
+        # summary_write = tf.summary.FileWriter('/tmp/logs/graph', graph=tf.get_default_graph())
         for epoch in range(epochs):
             total_loss = 0
+            batch_count = 0
+            batch_in = []
+            batch_out = []
             for count in range(len(data)):
-                try:
+                if batch_count >= batch_size:
+                    try:
+                        feed_dict = {self.input: batch_in, self.target: batch_out}
+                        loss, output, _ = self.sess.run([self.loss, self.output, self.train], feed_dict=feed_dict)
+                        total_loss += loss
+                        batch_count = 0
+                        batch_in = []
+                        batch_out = []
+                    except Exception as fail:
+                        continue
+                else:
                     params = data[count]
                     if fresh and epoch == 0:
                         with open('./ifds/fire.ifd') as f:
@@ -69,16 +83,16 @@ class ParamLearner:
                     img.thumbnail((128, 128), Image.ANTIALIAS)
                     img_in = np.asarray(img)
                     img_in = img_in / 255.0
-                    batch_in = []
-                    batch_out = []
+                    count += 1
                     batch_in.append(img_in)
                     batch_out.append(params)
+                    batch_count += 1
+            if len(batch_in) > 0:
+                try:
                     feed_dict = {self.input: batch_in, self.target: batch_out}
-                    loss, output = self.sess.run([self.loss, self.output], feed_dict=feed_dict)
+                    loss, output, _ = self.sess.run([self.loss, self.output, self.train], feed_dict=feed_dict)
                     total_loss += loss
-                    count += 1
                 except Exception as fail:
-                    print fail
                     continue
             if fresh and epoch == 0:
                 print "Image dataset rendered"

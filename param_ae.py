@@ -47,7 +47,7 @@ class ParamAutoEncoder:
         self.cost = tf.reduce_mean(self.loss)
         self.train = tf.train.AdamOptimizer().minimize(self.cost, name='train')
 
-    def start_train(self, fresh=True, norm=False, sample_size=500, epochs=1000):
+    def start_train(self, fresh=True, norm=False, sample_size=500, batch_size=10, epochs=1000):
         self.sess.run(tf.global_variables_initializer())
         if fresh:
             create_training_file(sample_size)
@@ -61,8 +61,21 @@ class ParamAutoEncoder:
         self.sess.run(tf.global_variables_initializer())
         for epoch in range(epochs):
             total_loss = 0
+            batch_count = 0
+            batch_in = []
+            batch_out = []
             for count in range(len(data)):
-                try:
+                if batch_count >= batch_size:
+                    try:
+                        feed_dict = {self.input: batch_in, self.target: batch_out}
+                        loss, encoding, output, _ = self.sess.run([self.loss, self.encoded, self.decoded, self.train], feed_dict=feed_dict)
+                        total_loss += loss
+                        batch_count = 0
+                        batch_in = []
+                        batch_out = []
+                    except Exception as fail:
+                        continue
+                else:
                     params = data[count]
                     if fresh and epoch == 0:
                         with open('./ifds/fire.ifd') as f:
@@ -77,16 +90,15 @@ class ParamAutoEncoder:
                     img.thumbnail((128, 128), Image.ANTIALIAS)
                     img_in = np.asarray(img)
                     img_in = img_in / 255.0
-                    batch_in = []
                     batch_in.append(img_in)
-                    batch_out = []
                     batch_out.append(params)
-                    feed_dict = {self.input: batch_in, self.target: batch_out}
-                    loss, encoding, output = self.sess.run([self.loss, self.encoded, self.decoded], feed_dict=feed_dict)
-                    total_loss += loss
                     count += 1
+            if len(batch_in) > 0:
+                try:
+                    feed_dict = {self.input: batch_in, self.target: batch_out}
+                    loss, output, _ = self.sess.run([self.loss, self.output, self.train], feed_dict=feed_dict)
+                    total_loss += loss
                 except Exception as fail:
-                    print fail
                     continue
             if fresh and epoch == 0:
                 print "Image dataset rendered"
