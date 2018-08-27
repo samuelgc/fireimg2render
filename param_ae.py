@@ -34,6 +34,7 @@ class ParamAutoEncoder:
         self.encoded = tf.layers.dense(dense1, units=10, name='encoded')
 
         #Decoding
+
         decode1 = tf.layers.dense(self.encoded, units=1024, activation=lrelu, name='decode1')
         decode0 = tf.layers.dense(decode1, units=16*16*32, activation=lrelu, name='decode0')
 
@@ -45,7 +46,12 @@ class ParamAutoEncoder:
         upsamp0 = tf.layers.conv2d_transpose(upsamp1, 64, 3, 2, padding="same", name='upsamp0')
         self.decoded = tf.layers.conv2d(upsamp0, 3, 3, padding="same", name='decoded')
 
-        #Loss
+        #Parameter Loss
+        param_diff = tf.square(self.target - self.encoded)
+        self.param_loss = tf.reduce_mean(param_diff, name='param_loss')
+        self.param_train = tf.train.AdamOptimizer().minimize(self.param_loss, name="param_trainer")
+
+        #Image Loss
         self.diff = tf.square(self.input - self.decoded)
         self.loss = tf.reduce_sum(self.diff, name='loss')
         self.cost = tf.reduce_mean(self.diff)
@@ -59,7 +65,8 @@ class ParamAutoEncoder:
         tf.summary.scalar("max", tf.reduce_max(self.decoded))
         tf.summary.tensor_summary("target", self.target)
         tf.summary.tensor_summary("output", self.encoded)
-        tf.summary.scalar("loss", self.cost)
+        tf.summary.scalar("param loss", self.param_loss)
+        tf.summary.scalar("image loss", self.cost)
         self.merge = tf.summary.merge_all()
 
     def start_train(self, fresh=True, norm=False, sample_size=500, batch_size=10, epochs=1000):
@@ -88,7 +95,7 @@ class ParamAutoEncoder:
                 if batch_count >= batch_size:
                     try:
                         feed_dict = {self.input: batch_in, self.target: batch_out}
-                        summary, loss, _ = self.sess.run([self.merge, self.loss, self.train], feed_dict=feed_dict)
+                        summary, loss, _ = self.sess.run([self.merge, self.cost, self.param_train, self.train], feed_dict=feed_dict)
                         summary_write.add_summary(summary, epoch)
                         total_loss += loss
                         batch_count = 0
@@ -119,7 +126,7 @@ class ParamAutoEncoder:
             if len(batch_in) > 0:
                 try:
                     feed_dict = {self.input: batch_in, self.target: batch_out}
-                    loss, _ = self.sess.run([self.loss, self.train], feed_dict=feed_dict)
+                    loss, _ = self.sess.run([self.cost, self.param_train, self.train], feed_dict=feed_dict)
                     total_loss += loss
                 except Exception as fail:
                     continue
