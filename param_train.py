@@ -1,10 +1,8 @@
 from subprocess import call
 from PIL import Image
+from data_gen import *
 
 import tensorflow as tf
-import numpy as np
-import random
-import csv
 
 
 class ParamLearner:
@@ -18,18 +16,19 @@ class ParamLearner:
         self.target = tf.placeholder(tf.float32, self.output_size, name='target')
 
         #Convolutional layers
-        conv0 = tf.layers.conv2d(self.input, 64, 3, padding="same", activation=tf.nn.relu, name='conv0')
+        conv0 = tf.layers.conv2d(self.input, 64, 5, padding="same", activation=tf.nn.relu, name='conv0')
         pool0 = tf.layers.max_pooling2d(conv0, 2, 2, padding="same", name='pool0')
-        conv1 = tf.layers.conv2d(pool0, 48, 3, padding="same", activation=tf.nn.relu, name='conv1')
+        conv1 = tf.layers.conv2d(pool0, 48, 5, padding="same", activation=tf.nn.relu, name='conv1')
         pool1 = tf.layers.max_pooling2d(conv1, 2, 2, padding="same", name='pool1')
-        conv2 = tf.layers.conv2d(pool1, 32, 3, padding="same", activation=tf.nn.relu, name='conv2')
+        conv2 = tf.layers.conv2d(pool1, 32, 5, padding="same", activation=tf.nn.relu, name='conv2')
         pool2 = tf.layers.max_pooling2d(conv2, 2, 2, padding="same", name='pool2')
 
         #Dense layers
         flat = tf.layers.flatten(pool2)
-        dense0 = tf.layers.dense(flat, units=1024, activation=tf.nn.relu, name='dense0')
-        dense1 = tf.layers.dense(dense0, units=512, activation=tf.nn.relu, name='dense1')
-        self.output = tf.layers.dense(dense1, units=10, name='output')
+        dense0 = tf.layers.dense(flat, units=2048, activation=tf.nn.relu, name='dense0')
+        dense1 = tf.layers.dense(dense0, units=1024, activation=tf.nn.relu, name='dense1')
+        dense2 = tf.layers.dense(dense1, units=512, activation=tf.nn.relu, name='dense2')
+        self.output = tf.layers.dense(dense2, units=10, name='output')
 
         self.loss = tf.reduce_sum(tf.abs(self.target - self.output), name='loss')
         self.cost = tf.reduce_mean(self.loss)
@@ -37,8 +36,11 @@ class ParamLearner:
 
         #Summaries
         self.initial = tf.global_variables_initializer()
-        # tf.summary.scalar("loss", self.loss)
-        # self.merge = tf.summary.merge_all()
+        tf.summary.image("input", self.input)
+        tf.summary.tensor_summary("target", self.target)
+        tf.summary.tensor_summary("output", self.output)
+        tf.summary.scalar("loss", self.loss)
+        self.merge = tf.summary.merge_all()
 
     def start_train(self, fresh=True, norm=False, sample_size=500, batch_size=10, epochs=1000):
         if fresh:
@@ -50,8 +52,10 @@ class ParamLearner:
             data = np.loadtxt('./train_data/normalized/shader_params.csv', delimiter=",")
         else:
             data = np.loadtxt('./train_data/shader_params.csv', delimiter=",")
+
         self.sess.run(self.initial)
-        # summary_write = tf.summary.FileWriter('/tmp/logs/graph', graph=tf.get_default_graph())
+        summary_write = tf.summary.FileWriter('/tmp/logs/one_log', graph=tf.get_default_graph())
+
         for epoch in range(epochs):
             sample_set = np.arange(sample_size)
             if (fresh and epoch > 0) or not fresh:
@@ -64,7 +68,8 @@ class ParamLearner:
                 if batch_count >= batch_size:
                     try:
                         feed_dict = {self.input: batch_in, self.target: batch_out}
-                        loss, output, _ = self.sess.run([self.loss, self.output, self.train], feed_dict=feed_dict)
+                        summary, loss, output, _ = self.sess.run([self.merge, self.loss, self.output, self.train], feed_dict=feed_dict)
+                        summary_write.add_summary(summary, epoch)
                         total_loss += loss
                         batch_count = 0
                         batch_in = []
@@ -103,51 +108,9 @@ class ParamLearner:
             print "Epoch: {} --> Average Loss: {}".format(epoch, total_loss / len(data))
 
 
-def generate_samples(size):
-    samples = []
-    for count in range(size):
-        sample = []
-        #Generate shader parameters randomly
-        sample.append(random.uniform(0.5, 1.5))             # Density Scale (0 - 2) default: 1
-        sample.append(random.uniform(0.5, 1.5))             # Smoke Brightness (0 - 2) default: 1
-        smoke_color = random.random()                   # Smoke Color (0 - 1) default: 0.2
-        sample.append(smoke_color)
-        sample.append(smoke_color)
-        sample.append(smoke_color)
-        sample.append(random.uniform(0.5, 1.5))             # Intensity Scale (0 - 5) default: 2
-        sample.append(random.uniform(0, .4))           # Temperature Scale (0 - 5) default: 0.2
-        sample.append(int(random.uniform(2500, 7500)))  # Color Temp in Kelvin (0 - 15000) default: 5000
-        sample.append(random.uniform(0.05, 0.25))       # Adaption (0 - 1) default: 0.15
-        sample.append(random.uniform(-0.5, 0.5))        # Burn (-2 - 2) default: 0
-        samples.append(sample)
-    return samples
-
-
-def create_training_file(size=100):
-    with open('./train_data/shader_params.csv', "w+") as f:
-        writer = csv.writer(f)
-        writer.writerows(generate_samples(size))
-        f.close()
-
-
-def normalize_training_file():
-    data = np.loadtxt('./train_data/shader_params.csv', delimiter=",")
-    for count in range(len(data)):
-        data[count, 0] /= 2.0
-        data[count, 1] /= 2.0
-        data[count, 5] /= 5.0
-        data[count, 6] /= 5.0
-        data[count, 7] /= 15000.0
-        data[count, 9] /= 2.0
-    with open('./train_data/normalized/shader_params.csv', "w+") as f:
-        writer = csv.writer(f)
-        writer.writerows(data)
-        f.close()
-
-
 def main():
     param_learner = ParamLearner()
-    param_learner.start_train(fresh=False, norm=True)
+    param_learner.start_train(fresh=False, norm=False)
 
 
 if __name__ == '__main__':
