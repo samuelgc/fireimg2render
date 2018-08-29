@@ -41,21 +41,21 @@ class ParamAutoEncoder:
         #Deconvolution layers
         blowout = tf.reshape(decode0, [-1, 16, 16, 32])
         deconv2 = tf.layers.conv2d(blowout, 32, 3, padding="same", activation=lrelu, name='deconv2')
-        upsamp2 = tf.layers.conv2d_transpose(deconv2, 32, 3, 2, padding="same", name="upsamp2")
+        upsamp2 = tf.layers.conv2d_transpose(deconv2, 32, 3, 2, padding="same", name='upsamp2')
         upsamp1 = tf.layers.conv2d_transpose(upsamp2, 48, 3, 2, padding="same", name='upsamp1')
         upsamp0 = tf.layers.conv2d_transpose(upsamp1, 64, 3, 2, padding="same", name='upsamp0')
         self.decoded = tf.layers.conv2d(upsamp0, 3, 3, padding="same", name='decoded')
 
         #Parameter Loss
-        param_diff = tf.square(self.target - self.encoded)
-        self.param_loss = tf.reduce_mean(param_diff, name='param_loss')
-        self.param_train = tf.train.AdamOptimizer().minimize(self.param_loss, name="param_trainer")
+        self.param_diff = tf.square(self.target - self.encoded)
+        self.param_loss = tf.reduce_mean(self.param_diff, name='param_loss')
+        self.param_train = tf.train.AdamOptimizer().minimize(self.param_loss, name='param_train')
 
         #Image Loss
-        self.diff = tf.square(self.input - self.decoded)
-        self.loss = tf.reduce_sum(self.diff, name='loss')
-        self.cost = tf.reduce_mean(self.diff)
-        self.train = tf.train.AdamOptimizer().minimize(self.cost, name='train')
+        self.image_diff = tf.square(self.input - self.decoded)
+        self.image_loss = tf.reduce_mean(self.image_diff, name='image_loss')
+        self.image_train = tf.train.AdamOptimizer().minimize(self.image_loss, name='image_train')
+        self.train = tf.group(self.param_train, self.image_train)
 
         #Summaries
         self.initial = tf.global_variables_initializer()
@@ -66,7 +66,7 @@ class ParamAutoEncoder:
         tf.summary.tensor_summary("target", self.target)
         tf.summary.tensor_summary("output", self.encoded)
         tf.summary.scalar("param loss", self.param_loss)
-        tf.summary.scalar("image loss", self.cost)
+        tf.summary.scalar("image loss", self.image_loss)
         self.merge = tf.summary.merge_all()
 
     def start_train(self, fresh=True, norm=False, sample_size=500, batch_size=10, epochs=1000):
@@ -95,7 +95,7 @@ class ParamAutoEncoder:
                 if batch_count >= batch_size:
                     try:
                         feed_dict = {self.input: batch_in, self.target: batch_out}
-                        summary, loss, _ = self.sess.run([self.merge, self.cost, self.param_train, self.train], feed_dict=feed_dict)
+                        summary, loss, _ = self.sess.run([self.merge, self.param_loss, self.train], feed_dict=feed_dict)
                         summary_write.add_summary(summary, epoch)
                         total_loss += loss
                         batch_count = 0
@@ -126,7 +126,7 @@ class ParamAutoEncoder:
             if len(batch_in) > 0:
                 try:
                     feed_dict = {self.input: batch_in, self.target: batch_out}
-                    loss, _ = self.sess.run([self.cost, self.param_train, self.train], feed_dict=feed_dict)
+                    loss, _ = self.sess.run([self.param_loss, self.train], feed_dict=feed_dict)
                     total_loss += loss
                 except Exception as fail:
                     continue
