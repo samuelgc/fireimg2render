@@ -1,6 +1,5 @@
 import tensorflow as tf
 
-from subprocess import call
 from PIL import Image
 from data_gen import *
 
@@ -69,12 +68,10 @@ class ParamAutoEncoder:
         tf.summary.scalar("image loss", self.image_loss)
         self.merge = tf.summary.merge_all()
 
-    def start_train(self, fresh=True, norm=False, sample_size=500, batch_size=10, epochs=1000):
+    def start_train(self, fresh=False, norm=True, sample_size=500, batch_size=10, epochs=100):
         if fresh:
-            create_training_file(sample_size)
-            print "New training file generated"
-            if norm:
-                normalize_training_file()
+            generate_data(sample_size)
+            print "New training data generated"
         if norm:
             data = np.loadtxt('./train_data/normalized/shader_params.csv', delimiter=",")
             print "Using Normalized saved files"
@@ -87,8 +84,7 @@ class ParamAutoEncoder:
 
         for epoch in range(epochs):
             sample_set = np.arange(sample_size)
-            if (fresh and epoch > 0) or not fresh:
-                np.random.shuffle(sample_set)
+            np.random.shuffle(sample_set)
             total_loss = 0
             batch_count = 0
             batch_in = []
@@ -110,15 +106,6 @@ class ParamAutoEncoder:
                 else:
                     item = sample_set[count]
                     params = data[item]
-                    if fresh and epoch == 0:
-                        with open('./ifds/fire.ifd') as f:
-                            search_string = "fc_colorramp_the_basis_strings ( \"linear\" \"linear\" ) fc_colorramp_the_key_positions ( 0 1 ) fc_colorramp_the_key_values ( 0 0 0 1 1 1 )"
-                            replace_string = "s_densityscale {} s_int {} s_color {} {} {} fi_int {} fc_int {} fc_colorramp_the_basis_strings ( \"linear\" \"linear\" ) fc_colorramp_the_key_positions ( 0 1 ) fc_colorramp_the_key_values ( 0 0 0 1 1 1 ) fc_bbtemp {} fc_bbadapt {} fc_bbburn {}" \
-                                .format(params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7], params[8], params[9])
-                            contents = f.read().replace(search_string, replace_string)
-                        with open('./ifds/render_fire_{}_{}.ifd'.format(epoch, item), "w+") as f:
-                            f.write(contents)
-                        call(["mantra", "./ifds/render_fire_{}_{}.ifd".format(epoch, item), "./render/render_{}.jpg".format(item)])
                     img = Image.open("./render/render_{}.jpg".format(item))
                     # img.thumbnail((128, 128), Image.ANTIALIAS)
                     img = img.resize((128,128),Image.BICUBIC)
@@ -144,7 +131,7 @@ class ParamAutoEncoder:
 
 def main():
     auto_encoder = ParamAutoEncoder()
-    auto_encoder.start_train(fresh=False, norm=True)
+    auto_encoder.start_train()
 
 
 if __name__ == '__main__':
