@@ -48,12 +48,10 @@ class ParamLearner:
         tf.summary.scalar("loss", self.cost)
         self.merge = tf.summary.merge_all()
 
-    def start_train(self, fresh=True, norm=False, sample_size=500, batch_size=10):
+    def start_train(self, fresh=False, norm=True, sample_size=500, batch_size=10):
         if fresh:
-            create_training_file(sample_size)
-            print "New training file generated"
-            if norm:
-                normalize_training_file()
+            generate_data(sample_size)
+            print "New training data generated"
         if norm:
             data = np.loadtxt('./train_data/normalized/shader_params.csv', delimiter=",")
         else:
@@ -88,15 +86,6 @@ class ParamLearner:
                 else:
                     item = sample_set[count]
                     params = data[item]
-                    if fresh and epoch == 0:
-                        with open('./ifds/fire.ifd') as f:
-                            search_string = "fc_colorramp_the_basis_strings ( \"linear\" \"linear\" ) fc_colorramp_the_key_positions ( 0 1 ) fc_colorramp_the_key_values ( 0 0 0 1 1 1 )"
-                            replace_string = "s_densityscale {} s_int {} s_color {} {} {} fi_int {} fc_int {} fc_colorramp_the_basis_strings ( \"linear\" \"linear\" ) fc_colorramp_the_key_positions ( 0 1 ) fc_colorramp_the_key_values ( 0 0 0 1 1 1 ) fc_bbtemp {} fc_bbadapt {} fc_bbburn {}" \
-                                .format(params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7], params[8], params[9])
-                            contents = f.read().replace(search_string, replace_string)
-                        with open('./ifds/render_fire_{}_{}.ifd'.format(epoch, item), "w+") as f:
-                            f.write(contents)
-                        call(["mantra", "./ifds/render_fire_{}_{}.ifd".format(epoch, item), "./render/render_{}.jpg".format(item)])
                     img = Image.open("./render/render_{}.jpg".format(item))
                     img.thumbnail((128, 128), Image.ANTIALIAS)
                     img_in = np.asarray(img)
@@ -153,7 +142,7 @@ class ParamLearner:
 
 def main():
     param_learner = ParamLearner()
-    param_learner.start_train(fresh=False, norm=True)
+    param_learner.start_train()
     param_learner.test("./fire_images/google/fire/19. fire_from_brazier.jpg", 0)
     param_learner.test("./render/render_56.jpg", 1)
 
