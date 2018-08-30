@@ -77,8 +77,10 @@ class ParamAutoEncoder:
                 normalize_training_file()
         if norm:
             data = np.loadtxt('./train_data/normalized/shader_params.csv', delimiter=",")
+            print "Using Normalized saved files"
         else:
             data = np.loadtxt('./train_data/shader_params.csv', delimiter=",")
+            print "Using Non-Normalized saved files"
 
         self.sess.run(self.initial)
         summary_write = tf.summary.FileWriter('/tmp/logs/ae_log', graph=tf.get_default_graph())
@@ -91,6 +93,7 @@ class ParamAutoEncoder:
             batch_count = 0
             batch_in = []
             batch_out = []
+            badcount = 0
             for count in range(len(data)):
                 if batch_count >= batch_size:
                     try:
@@ -102,6 +105,7 @@ class ParamAutoEncoder:
                         batch_in = []
                         batch_out = []
                     except Exception as fail:
+                        print str(fail)
                         continue
                 else:
                     item = sample_set[count]
@@ -116,7 +120,8 @@ class ParamAutoEncoder:
                             f.write(contents)
                         call(["mantra", "./ifds/render_fire_{}_{}.ifd".format(epoch, item), "./render/render_{}.jpg".format(item)])
                     img = Image.open("./render/render_{}.jpg".format(item))
-                    img.thumbnail((128, 128), Image.ANTIALIAS)
+                    # img.thumbnail((128, 128), Image.ANTIALIAS)
+                    img = img.resize((128,128),Image.BICUBIC)
                     img_in = np.asarray(img)
                     img_in = img_in / 255.0
                     count += 1
@@ -129,6 +134,7 @@ class ParamAutoEncoder:
                     loss, _ = self.sess.run([self.param_loss, self.train], feed_dict=feed_dict)
                     total_loss += loss
                 except Exception as fail:
+                    print str(fail)
                     continue
 
             if fresh and epoch == 0:
