@@ -73,7 +73,7 @@ class ParamAutoEncoder:
         tf.summary.scalar("image loss", self.image_loss)
         self.merge = tf.summary.merge_all()
 
-    def start_train(self, fresh=False, norm=True, sample_size=500, batch_size=10):
+    def start_train(self, fresh=False, norm=True, sample_size=400, batch_size=10):
         if fresh:
             generate_data(sample_size)
             print "New training data generated"
