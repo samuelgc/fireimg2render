@@ -48,7 +48,7 @@ class ParamLearner:
         tf.summary.scalar("loss", self.cost)
         self.merge = tf.summary.merge_all()
 
-    def start_train(self, fresh=False, norm=True, sample_size=500, batch_size=10):
+    def start_train(self, fresh=False, norm=True, sample_size=400, batch_size=10):
         if fresh:
             generate_data(sample_size)
             print "New training data generated"
@@ -64,7 +64,7 @@ class ParamLearner:
         last_mse = 0
         epoch = 0
         while change_count < 7:
-            sample_set = np.arange(sample_size)
+            sample_set = np.arange(len(data))
             if (fresh and epoch > 0) or not fresh:
                 np.random.shuffle(sample_set)
             total_loss = 0
@@ -122,10 +122,7 @@ class ParamLearner:
         img_in = img_in / 255.0
         batch_in = []
         batch_in.append(img_in)
-        fake = np.arange(10)
-        batch_out = []
-        batch_out.append(fake)
-        feed_dict = {self.input: batch_in, self.target: batch_out}
+        feed_dict = {self.input: batch_in}
         output, _ = self.sess.run([self.output, self.cost], feed_dict=feed_dict)
 
         params = denormalize(output[0])
