@@ -1,3 +1,4 @@
+from PIL import Image
 import simplejson
 import numpy as np
 def pullGeo(filename):
@@ -8,6 +9,7 @@ def pullGeo(filename):
     geoInfo = file_str[start_ind:end_ind + 2]
     start_int = geoInfo.find("[")
     geoInfo = geoInfo[start_int:]
+    f.close()
     return simplejson.loads(geoInfo)
 
 def getInfo(data):
@@ -85,16 +87,43 @@ def getAllVoxelData(geoData,geoInfo):
     for i in range(len(geoInfo)):
         voxelData[geoInfo[i]] = getVoxelDataAt(allVoxelData[i*2 + 1],dimX, dimY, dimZ)
     return voxelData
+def getLights(filename):
+    f = open(filename,"r")
+    file_str = f.read()
+    f.close()    
+    l1 = file_str.find("ray_start light")
+    string_short = file_str[l1:]
+    chunks = []
+    #get chuncks AKA diff lights
+    l1 = string_short.find("ray_start light")
+    while 0 <= l1:
+        # print string_short[0:10]
+        l2 = string_short.find("ray_end")
+        chunks.append(string_short[l1:l2])
+        string_short = string_short[l2+10:]
+        l1 = string_short.find("ray_start light")
+    lights = {}
+    for i,ch in enumerate(chunks):
+        words = ch.split()
+        light = []
+        for j in range(5,21):
+            light.append(words[j])
+        lights["light_{}".format(i)] = light
+    print lights
+
+    
 
 if __name__== '__main__':
     geoData = pullGeo("fire_lit.ifd")
-    
     geoInfo, dimX , dimY , dimZ = getInfo(geoData)
     voxelData = getAllVoxelData(geoData,geoInfo)
+
+    lights = getLights("fire_lit.ifd")
+
     # density = voxelData["density"]
-    # slicedDen = density[:,0,:]
-    # for sl in range(len(density)):
+    # slicedDen = density[:,:,:]
+    # for sl in range(len(density[1])):
     #     imgTemp = Image.fromarray(np.uint8(density[:,sl,:] * 255),"L")
-    #     imgTemp.save("slice[{}].png".format(str(sl + 1).zfill(2)))
+    #     imgTemp.save("slice/[{}].png".format(str(sl + 1).zfill(2)))
     
     
