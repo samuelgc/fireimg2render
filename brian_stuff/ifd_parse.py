@@ -102,14 +102,14 @@ def getLights(filename):
         chunks.append(string_short[l1:l2])
         string_short = string_short[l2+10:]
         l1 = string_short.find("ray_start light")
-    lights = {}
+    lights = []]
     for i,ch in enumerate(chunks):
         words = ch.split()
         light = []
         for j in range(5,21):
             light.append(words[j])
-        lights["light_{}".format(i)] = light
-    print lights
+        lights.append(light)
+    return lights
 
     
 
