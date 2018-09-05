@@ -102,7 +102,7 @@ def getLights(filename):
         chunks.append(string_short[l1:l2])
         string_short = string_short[l2+10:]
         l1 = string_short.find("ray_start light")
-    lights = []]
+    lights = []
     for i,ch in enumerate(chunks):
         words = ch.split()
         light = []
@@ -119,7 +119,7 @@ if __name__== '__main__':
     voxelData = getAllVoxelData(geoData,geoInfo)
 
     lights = getLights("fire_lit.ifd")
-
+    print lights
     # density = voxelData["density"]
     # slicedDen = density[:,:,:]
     # for sl in range(len(density[1])):
