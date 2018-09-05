@@ -13,16 +13,6 @@ def generate_samples(size):
         sample.append(random.uniform(0.5, 1.5))         #(0) Density Scale (0 - 2) default: 1
         sample.append(random.uniform(0.5, 1.5))         #(1) Smoke Brightness (0 - 2) default: 1
         smoke_color = random.random()                   # Smoke Color (0 - 1) default: 0.2
-<<<<<<< HEAD
-        sample.append(smoke_color)                      #(2)
-        sample.append(smoke_color)                      #(3)
-        sample.append(smoke_color)                      #(4)
-        sample.append(random.uniform(0.5, 1.5))         #(5) Intensity Scale (0 - 5) default: 2
-        sample.append(random.uniform(0, .4))            #(6) Temperature Scale (0 - 5) default: 0.2
-        sample.append(int(random.uniform(2500, 7500)))  #(7) Color Temp in Kelvin (0 - 15000) default: 5000
-        sample.append(random.uniform(0.05, 0.25))       #(8) Adaption (0 - 1) default: 0.15
-        sample.append(random.uniform(-0.5, 0.5))        #(9) Burn (-2 - 2) default: 0
-=======
         sample.append(smoke_color)
         sample.append(smoke_color)
         sample.append(smoke_color)
@@ -31,7 +21,6 @@ def generate_samples(size):
         sample.append(int(random.uniform(4000, 6000)))  # Color Temp in Kelvin (0 - 15000) default: 5000
         sample.append(random.uniform(0.05, 0.25))       # Adaption (0 - 1) default: 0.15
         sample.append(random.uniform(-0.5, 0.5))        # Burn (-2 - 2) default: 0
->>>>>>> 747673dcbe57033f993e0302eb518fab96960a5c
         samples.append(sample)
     return samples
 
@@ -106,7 +95,8 @@ def denormalize(sample):
 
 
 def render_sample(select, epoch, item, params):
-    with open('./ifds/fire_{}.ifd'.format(select)) as f:
+    # with open('./ifds/fire_{}.ifd'.format()) as f:
+    with open('./ifds/fire.ifd') as f:
         search_string = "fc_colorramp_the_basis_strings ( \"linear\" \"linear\" ) fc_colorramp_the_key_positions ( 0 1 ) fc_colorramp_the_key_values ( 0 0 0 1 1 1 )"
         replace_string = "s_densityscale {} s_int {} s_color {} {} {} fi_int {} fc_int {} fc_colorramp_the_basis_strings ( \"linear\" \"linear\" ) fc_colorramp_the_key_positions ( 0 1 ) fc_colorramp_the_key_values ( 0 0 0 1 1 1 ) fc_bbtemp {} fc_bbadapt {} fc_bbburn {}" \
             .format(params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7], params[8],

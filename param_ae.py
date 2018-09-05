@@ -1,33 +1,38 @@
 import tensorflow as tf
-
+from arg_help import *
 from PIL import Image
 from data_gen import *
+import sys
 
 
 def lrelu(x, alpha=0.1):
     return tf.maximum(alpha * x, x)
-
+def clip(x):
+    return tf.maximum(x,0)
 
 class ParamAutoEncoder:
     input_size = [None, 128, 128, 3]
     param_size = [None, 10]
 
-    def __init__(self):
+    def __init__(self,args):
         gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.333)
         self.sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
         self.input = tf.placeholder(tf.float32, self.input_size, name='input')
         self.target = tf.placeholder(tf.float32, self.param_size, name='target')
-
+        l1 = args.l1
+        l2 = args.l2
+        l3 = args.l3
+        k1,k2,k3 = args.k1,args.k2,args.k3
         #Convolution layers
-        conv0 = tf.layers.conv2d(self.input, 64, 3, padding="same", activation=lrelu, name='conv0')
+        conv0 = tf.layers.conv2d(self.input, l1, k1, padding="same", activation=lrelu, name='conv0')
         pool0 = tf.layers.max_pooling2d(conv0, 2, 2, padding="same", name='pool0')
-        conv1 = tf.layers.conv2d(pool0, 48, 3, padding="same", activation=lrelu, name='conv1')
+        conv1 = tf.layers.conv2d(pool0, l2, k2, padding="same", activation=lrelu, name='conv1')
         pool1 = tf.layers.max_pooling2d(conv1, 2, 2, padding="same", name='pool1')
-        conv2 = tf.layers.conv2d(pool1, 32, 3, padding="same", activation=lrelu, name='conv2')
+        conv2 = tf.layers.conv2d(pool1, l3, k3, padding="same", activation=lrelu, name='conv2')
         pool2 = tf.layers.max_pooling2d(conv2, 2, 2, padding="same", name='pool2')
 
         #Dense layers
-        flat = tf.reshape(pool2, [-1, 16*16*32])
+        flat = tf.reshape(pool2, [-1, 16*16*l3])
         dense0 = tf.layers.dense(flat, units=1024, activation=lrelu, name='dense0')
         dense1 = tf.layers.dense(dense0, units=512, activation=lrelu, name='dense1')
         self.encoded = tf.layers.dense(dense1, units=10, name='encoded')
@@ -35,16 +40,16 @@ class ParamAutoEncoder:
         #Decoding
 
         decode1 = tf.layers.dense(self.encoded, units=1024, activation=lrelu, name='decode1')
-        decode0 = tf.layers.dense(decode1, units=16*16*32, activation=lrelu, name='decode0')
+        decode0 = tf.layers.dense(decode1, units=16*16*l3, activation=lrelu, name='decode0')
 
         #Deconvolution layers
-        blowout = tf.reshape(decode0, [-1, 16, 16, 32])
+        blowout = tf.reshape(decode0, [-1, 16, 16, l3])
         deconv2 = tf.layers.conv2d(blowout, 32, 3, padding="same", activation=lrelu, name='deconv2')
-        upsamp2 = tf.layers.conv2d_transpose(deconv2, 32, 3, 2, padding="same", name='upsamp2')
-        upsamp1 = tf.layers.conv2d_transpose(upsamp2, 48, 3, 2, padding="same", name='upsamp1')
-        upsamp0 = tf.layers.conv2d_transpose(upsamp1, 64, 3, 2, padding="same", name='upsamp0')
-        self.decoded = tf.layers.conv2d(upsamp0, 3, 3, padding="same", name='decoded')
-
+        upsamp2 = tf.layers.conv2d_transpose(deconv2, l3, 3, 2, padding="same", name='upsamp2')
+        upsamp1 = tf.layers.conv2d_transpose(upsamp2, l2, 3, 2, padding="same", name='upsamp1')
+        upsamp0 = tf.layers.conv2d_transpose(upsamp1, l1, 3, 2, padding="same", name='upsamp0')
+        self.decoded = tf.layers.conv2d(upsamp0, 3, 3, activation=clip, padding="same", name='decoded')
+        
         #Parameter Loss
         self.param_diff = tf.square(self.target - self.encoded)
         self.param_loss = tf.reduce_mean(self.param_diff, name='param_loss')
@@ -55,7 +60,8 @@ class ParamAutoEncoder:
         self.image_loss = tf.reduce_mean(self.image_diff, name='image_loss')
         self.image_train = tf.train.AdamOptimizer().minimize(self.image_loss, name='image_train')
         self.train = tf.group(self.param_train, self.image_train)
-
+        #debuggin
+        self.save_img = self.decoded
         #Summaries
         self.initial = tf.global_variables_initializer()
         tf.summary.image("input", self.input)
@@ -64,11 +70,11 @@ class ParamAutoEncoder:
         tf.summary.scalar("max", tf.reduce_max(self.decoded))
         tf.summary.tensor_summary("target", self.target)
         tf.summary.tensor_summary("output", self.encoded)
-        tf.summary.scalar("param loss", self.param_loss)
-        tf.summary.scalar("image loss", self.image_loss)
+        tf.summary.scalar("loss/param_loss", self.param_loss)
+        tf.summary.scalar("loss/image_loss", self.image_loss)
         self.merge = tf.summary.merge_all()
 
-    def start_train(self, fresh=False, norm=True, sample_size=500, batch_size=10, epochs=100):
+    def start_train(self, fresh=False, norm=True, sample_size=100, batch_size=10, epochs=100,expname="default"):
         if fresh:
             generate_data(sample_size)
             print "New training data generated"
@@ -80,7 +86,7 @@ class ParamAutoEncoder:
             print "Using Non-Normalized saved files"
 
         self.sess.run(self.initial)
-        summary_write = tf.summary.FileWriter('/tmp/logs/ae_log', graph=tf.get_default_graph())
+        summary_write = tf.summary.FileWriter('tb/{}'.format(expname), graph=tf.get_default_graph())
 
         for epoch in range(epochs):
             sample_set = np.arange(sample_size)
@@ -94,7 +100,7 @@ class ParamAutoEncoder:
                 if batch_count >= batch_size:
                     try:
                         feed_dict = {self.input: batch_in, self.target: batch_out}
-                        summary, loss, _ = self.sess.run([self.merge, self.param_loss, self.train], feed_dict=feed_dict)
+                        summary,img_save, loss, _ = self.sess.run([self.merge,self.save_img,self.param_loss, self.train], feed_dict=feed_dict)
                         summary_write.add_summary(summary, epoch)
                         total_loss += loss
                         batch_count = 0
@@ -130,8 +136,11 @@ class ParamAutoEncoder:
 
 
 def main():
-    auto_encoder = ParamAutoEncoder()
-    auto_encoder.start_train()
+    args = load_args(sys.argv[1])
+    # for arg in args:
+        # print arg," = ", args[arg]
+    auto_encoder = ParamAutoEncoder(args)
+    auto_encoder.start_train(expname=args.expname)
 
 
 if __name__ == '__main__':
