@@ -48,7 +48,7 @@ class ParamLearner:
         tf.summary.scalar("loss", self.cost)
         self.merge = tf.summary.merge_all()
 
-    def start_train(self, fresh=False, norm=True, sample_size=400, batch_size=10):
+    def start_train(self, fresh=False, norm=True, sample_size=500, batch_size=10):
         if fresh:
             generate_data(sample_size)
             print "New training data generated"
@@ -123,14 +123,13 @@ class ParamLearner:
         batch_in = []
         batch_in.append(img_in)
         feed_dict = {self.input: batch_in}
-        output, _ = self.sess.run([self.output, self.cost], feed_dict=feed_dict)
+        output, _ = self.sess.run([self.output, self.input], feed_dict=feed_dict)
 
         params = denormalize(output[0])
         with open('./ifds/fire.ifd') as f:
             search_string = "fc_colorramp_the_basis_strings ( \"linear\" \"linear\" ) fc_colorramp_the_key_positions ( 0 1 ) fc_colorramp_the_key_values ( 0 0 0 1 1 1 )"
             replace_string = "s_densityscale {} s_int {} s_color {} {} {} fi_int {} fc_int {} fc_colorramp_the_basis_strings ( \"linear\" \"linear\" ) fc_colorramp_the_key_positions ( 0 1 ) fc_colorramp_the_key_values ( 0 0 0 1 1 1 ) fc_bbtemp {} fc_bbadapt {} fc_bbburn {}" \
-                .format(params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7],
-                        params[8], params[9])
+                .format(params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7], params[8], params[9])
             contents = f.read().replace(search_string, replace_string)
         with open('./ifds/test_render{}.ifd'.format(attempt), "w+") as f:
             f.write(contents)

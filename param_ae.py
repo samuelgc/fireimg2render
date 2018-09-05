@@ -134,7 +134,7 @@ class ParamAutoEncoder:
 
             epoch += 1
             mse = total_loss / len(data)
-            if abs(mse - last_mse) < 0.0002:
+            if abs(mse - last_mse) < 0.0005:
                 change_count += 1
             else:
                 change_count = 0
