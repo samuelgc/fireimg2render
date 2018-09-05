@@ -62,15 +62,13 @@ class ParamRenderFeedback:
         self.image_diff = tf.square(self.render - self.decoded)
         self.image_loss = tf.reduce_mean(self.image_diff, name='image_loss')
         self.image_train = tf.train.AdamOptimizer().minimize(self.image_loss, name='image_train')
-        # self.train = tf.group(self.param_train, self.image_train)
+        self.train = tf.group(self.param_train, self.image_train)
 
         #Summaries
         self.initial = tf.global_variables_initializer()
         tf.summary.image("input", self.input)
         tf.summary.image("render", self.render)
         tf.summary.image("decoding", self.decoded)
-        tf.summary.tensor_summary("target", self.target)
-        tf.summary.tensor_summary("output", self.encoded)
         tf.summary.scalar("param loss", self.param_loss)
         tf.summary.scalar("image loss", self.image_loss)
         self.merge = tf.summary.merge_all()
@@ -121,9 +119,10 @@ class ParamRenderFeedback:
                     render.thumbnail((128, 128), Image.ANTIALIAS)
                     rendered = np.asarray(render)
                     rendered = rendered / 255.0
+                    encoded_in = [encoding]
                     render_in = [rendered]
-                    feed_dict = {self.input: input_in, self.target: target_in, self.render: render_in}
-                    summary, loss, _ = self.sess.run([self.merge, self.param_loss, self.image_train], feed_dict=feed_dict)
+                    feed_dict = {self.input: input_in, self.target: encoded_in, self.render: render_in}
+                    summary, loss, _ = self.sess.run([self.merge, self.param_loss, self.train], feed_dict=feed_dict)
                     summary_write.add_summary(summary, count * (epoch+1))
                     total_loss += loss
                 except Exception as fail:

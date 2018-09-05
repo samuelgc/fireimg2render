@@ -2,15 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bdd81ca7-80f5-4900-9b10-579abb05ac82" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/param_rfl.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ifd_parse.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ifds/test_render0.ifd" beforeDir="false" afterPath="$PROJECT_DIR$/ifds/test_render0.ifd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ifds/test_render1.ifd" beforeDir="false" afterPath="$PROJECT_DIR$/ifds/test_render1.ifd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/param_ae.py" beforeDir="false" afterPath="$PROJECT_DIR$/param_ae.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/param_train.py" beforeDir="false" afterPath="$PROJECT_DIR$/param_train.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/render/test_render0.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/render/test_render0.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/render/test_render1.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/render/test_render1.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/train_data/normalized/shader_params.csv" beforeDir="false" afterPath="$PROJECT_DIR$/train_data/normalized/shader_params.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ifds/temp_render.ifd" beforeDir="false" afterPath="$PROJECT_DIR$/ifds/temp_render.ifd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/param_rfl.py" beforeDir="false" afterPath="$PROJECT_DIR$/param_rfl.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -36,7 +31,7 @@
       <file leaf-file-name="param_ae.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/param_ae.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-321">
+            <state relative-caret-position="630">
               <caret line="69" column="56" selection-start-line="69" selection-start-column="56" selection-end-line="69" selection-end-column="56" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
@@ -45,11 +40,23 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="param_rfl.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ifd_parse.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/ifd_parse.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1605">
+              <caret line="107" column="68" selection-start-line="107" selection-start-column="68" selection-end-line="107" selection-end-column="68" />
+              <folding>
+                <element signature="e#0#17#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="param_rfl.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/param_rfl.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="500">
-              <caret line="127" column="73" lean-forward="true" selection-start-line="127" selection-start-column="73" selection-end-line="127" selection-end-column="73" />
+            <state relative-caret-position="450">
+              <caret line="129" column="28" selection-start-line="129" selection-start-column="28" selection-end-line="129" selection-end-column="28" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -122,6 +129,7 @@
         <option value="$PROJECT_DIR$/param_ae.py" />
         <option value="$PROJECT_DIR$/param_train.py" />
         <option value="$PROJECT_DIR$/param_rfl.py" />
+        <option value="$PROJECT_DIR$/ifd_parse.py" />
       </list>
     </option>
   </component>
@@ -142,11 +150,6 @@
             <path>
               <item name="FireImg_Render" type="b2602c69:ProjectViewProjectNode" />
               <item name="FireImg_Render" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="FireImg_Render" type="b2602c69:ProjectViewProjectNode" />
-              <item name="FireImg_Render" type="462c0819:PsiDirectoryNode" />
-              <item name="ifds" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -242,7 +245,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="1679" y="0" width="1602" height="1200" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18960051" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -311,13 +313,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/render_fire.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="66" selection-start-line="66" selection-end-line="66" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
@@ -565,16 +560,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/param_ae.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-321">
-          <caret line="69" column="56" selection-start-line="69" selection-start-column="56" selection-end-line="69" selection-end-column="56" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data_gen.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="649">
@@ -594,10 +579,30 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/param_rfl.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="500">
-          <caret line="127" column="73" lean-forward="true" selection-start-line="127" selection-start-column="73" selection-end-line="127" selection-end-column="73" />
+        <state relative-caret-position="450">
+          <caret line="129" column="28" selection-start-line="129" selection-start-column="28" selection-end-line="129" selection-end-column="28" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/param_ae.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="630">
+          <caret line="69" column="56" selection-start-line="69" selection-start-column="56" selection-end-line="69" selection-end-column="56" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ifd_parse.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1605">
+          <caret line="107" column="68" selection-start-line="107" selection-start-column="68" selection-end-line="107" selection-end-column="68" />
+          <folding>
+            <element signature="e#0#17#0" expanded="true" />
           </folding>
         </state>
       </provider>
