@@ -108,6 +108,7 @@ class ParamRenderFeedback:
                     feed_dict = {self.input: input_in, self.intrinsic: intrin_in, self.target: target_in}
                     output, _ = self.sess.run([self.encoded, self.param_train], feed_dict=feed_dict)
 
+                    encoded_in = [output[0].copy()]
                     encoding = denormalize(output[0])
                     with open('./ifds/fire.ifd') as f:
                         search_string = "fc_colorramp_the_basis_strings ( \"linear\" \"linear\" ) fc_colorramp_the_key_positions ( 0 1 ) fc_colorramp_the_key_values ( 0 0 0 1 1 1 )"
@@ -123,10 +124,9 @@ class ParamRenderFeedback:
                     rendered = np.asarray(render)
                     rendered = rendered / 255.0
                     fire_intrin = [getIntrinsics("./ifds/fire.ifd")]
-                    encoded_in = [output[0]]
                     render_in = [rendered]
                     feed_dict = {self.input: input_in, self.target: encoded_in, self.intrinsic: fire_intrin, self.render: render_in}
-                    summary, loss, _ = self.sess.run([self.merge, self.param_loss, self.train], feed_dict=feed_dict)
+                    summary, loss, _ = self.sess.run([self.merge, self.param_loss, self.image_train], feed_dict=feed_dict)
                     summary_write.add_summary(summary, x)
                     x += 1
                     total_loss += loss
