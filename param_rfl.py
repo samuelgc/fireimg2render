@@ -90,7 +90,7 @@ class ParamRenderFeedback:
         change_count = 0
         last_mse = 0
         epoch = 0
-        while change_count < 7:
+        while change_count < 5:
             sample_set = np.arange(len(data))
             np.random.shuffle(sample_set)
             total_loss = 0
