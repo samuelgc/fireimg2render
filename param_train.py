@@ -46,8 +46,6 @@ class ParamLearner:
         #Summaries
         self.initial = tf.global_variables_initializer()
         tf.summary.image("input", self.input)
-        tf.summary.tensor_summary("target", self.target)
-        tf.summary.tensor_summary("output", self.output)
         tf.summary.scalar("loss", self.cost)
         self.merge = tf.summary.merge_all()
 

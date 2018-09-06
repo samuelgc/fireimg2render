@@ -68,8 +68,6 @@ class ParamAutoEncoder:
         self.initial = tf.global_variables_initializer()
         tf.summary.image("input", self.input)
         tf.summary.image("result", self.decoded)
-        tf.summary.tensor_summary("target", self.target)
-        tf.summary.tensor_summary("output", self.encoded)
         tf.summary.scalar("param loss", self.param_loss)
         tf.summary.scalar("image loss", self.image_loss)
         self.merge = tf.summary.merge_all()
