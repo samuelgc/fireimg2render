@@ -2,6 +2,7 @@ import tensorflow as tf
 
 from PIL import Image
 from data_gen import *
+from ifd_parse import *
 
 
 def lrelu(x, alpha=0.1):
@@ -14,7 +15,7 @@ def clip(x):
 
 class ParamRenderFeedback:
     image_size = [None, 128, 128, 3]
-    intrinsic_size = [None, 6]
+    intrinsic_size = [None, 12]
     param_size = [None, 10]
 
     def __init__(self):
@@ -35,8 +36,8 @@ class ParamRenderFeedback:
 
         #Dense layers
         flat = tf.reshape(pool2, [-1, 16*16*32])
-        # flat_plus = tf.concat([flat, self.intrinsic], 1)
-        dense0 = tf.layers.dense(flat, units=1024, activation=lrelu, name='dense0')
+        flat_plus = tf.concat([flat, self.intrinsic], 1)
+        dense0 = tf.layers.dense(flat_plus, units=1024, activation=lrelu, name='dense0')
         dense1 = tf.layers.dense(dense0, units=512, activation=lrelu, name='dense1')
         self.encoded = tf.layers.dense(dense1, units=10, name='encoded')
 
@@ -85,6 +86,7 @@ class ParamRenderFeedback:
         self.sess.run(self.initial)
         summary_write = tf.summary.FileWriter('/tmp/logs/rfl_log', graph=tf.get_default_graph())
 
+        x = 0
         change_count = 0
         last_mse = 0
         epoch = 0
@@ -101,8 +103,9 @@ class ParamRenderFeedback:
                     img_in = np.asarray(img)
                     img_in = img_in / 255.0
                     input_in = [img_in]
+                    intrin_in = [getIntrinsics("./ifds/fire_{}.ifd".format(int(item/400)))]
                     target_in = [params]
-                    feed_dict = {self.input: input_in, self.target: target_in}
+                    feed_dict = {self.input: input_in, self.intrinsic: intrin_in, self.target: target_in}
                     output, _ = self.sess.run([self.encoded, self.param_train], feed_dict=feed_dict)
 
                     encoding = denormalize(output[0])
@@ -119,11 +122,13 @@ class ParamRenderFeedback:
                     render.thumbnail((128, 128), Image.ANTIALIAS)
                     rendered = np.asarray(render)
                     rendered = rendered / 255.0
+                    fire_intrin = [getIntrinsics("./ifds/fire.ifd")]
                     encoded_in = [encoding]
                     render_in = [rendered]
-                    feed_dict = {self.input: input_in, self.target: encoded_in, self.render: render_in}
+                    feed_dict = {self.input: input_in, self.target: encoded_in, self.intrinsic: fire_intrin, self.render: render_in}
                     summary, loss, _ = self.sess.run([self.merge, self.param_loss, self.train], feed_dict=feed_dict)
-                    summary_write.add_summary(summary, count * (epoch+1))
+                    summary_write.add_summary(summary, x)
+                    x += 1
                     total_loss += loss
                 except Exception as fail:
                     print fail

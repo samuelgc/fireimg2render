@@ -14,13 +14,11 @@ def pullGeo(filename):
 
 
 def getInfo(data):
-    geoData = data  # loadJson("./help.json")
+    geoData = data
     dataInfo = geoData[15]
     arrDim = dataInfo[0][0][7]["res"]
     dimX, dimY, dimZ = arrDim[0], arrDim[1], arrDim[2]
-    # volume = geoData[18][0]
     geoTypes = geoData[13][5][1][1][5]
-    # print geoTypes
     return geoTypes, int(dimX), int(dimY), int(dimZ)
 
 
@@ -29,8 +27,7 @@ def printBy16(tile):
         print st, tile[st * 16:(st + 1) * 16]
 
 
-def getTileData(tile, mat, xOff, yOff, zOff, comp):
-    # print comp
+def getTileData(tile, mat, xOff, yOff, zOff, comp, dimX, dimY, dimZ):
     # Calculating start x y z values for the tile
     x_start = xOff * 16
     y_start = yOff * 16
@@ -72,7 +69,7 @@ def getTileData(tile, mat, xOff, yOff, zOff, comp):
     # mat[x_start:x_end,y_start:y_end,z_start:z_end] = arrMat
 
 
-def getVoxelDataAt(data, x, y, z):
+def getVoxelDataAt(data, x, y, z, dimX, dimY, dimZ):
     comprArr = data[2][1][3]
     tiles = data[2][1][5]
     mat = np.empty((x, y, z))
@@ -81,26 +78,70 @@ def getVoxelDataAt(data, x, y, z):
         for ty in range((dimY + 15) // 16):
             for tz in range((dimZ + 15) // 16):
                 tile = tiles[tileCount]
-                getTileData(tile[3], mat, tx, ty, tz, tile[1])
+                getTileData(tile[3], mat, tx, ty, tz, tile[1], dimX, dimY, dimZ)
                 tileCount += 1
     return mat
 
 
-def getAllVoxelData(geoData, geoInfo):
-    # print geoData[18]
+def getAllVoxelData(geoData, geoInfo, dimX, dimY, dimZ):
     allVoxelData = geoData[19]
-    # print allVoxelData
     voxelData = {}
     for i in range(len(geoInfo)):
-        voxelData[geoInfo[i]] = getVoxelDataAt(allVoxelData[i * 2 + 1], dimX, dimY, dimZ)
+        voxelData[geoInfo[i]] = getVoxelDataAt(allVoxelData[i * 2 + 1], dimX, dimY, dimZ, dimX, dimY, dimZ)
     return voxelData
 
 
-if __name__ == '__main__':
-    geoData = pullGeo("fire_lit.ifd")
+def geoIntrinsics(data, fields):
+    intrinsics = []
+    for field in fields:
+        voxels = data[field]
+        intrinsics.append(voxels.max())
+        intrinsics.append(voxels.mean())
+        intrinsics.append(np.percentile(voxels, 25))
+        intrinsics.append(np.percentile(voxels, 75))
+    return intrinsics
 
+
+def getIntrinsics(filename):
+    geoData = pullGeo(filename)
     geoInfo, dimX, dimY, dimZ = getInfo(geoData)
-    voxelData = getAllVoxelData(geoData, geoInfo)
+    voxelData = getAllVoxelData(geoData, geoInfo, dimX, dimY, dimZ)
+    return geoIntrinsics(voxelData, ["density", "heat", "temperature"])
+
+
+def getLights(filename):
+    f = open(filename,"r")
+    file_str = f.read()
+    f.close()
+    l1 = file_str.find("ray_start light")
+    string_short = file_str[l1:]
+    chunks = []
+    #get chuncks AKA diff lights
+    l1 = string_short.find("ray_start light")
+    while 0 <= l1:
+        l2 = string_short.find("ray_end")
+        chunks.append(string_short[l1:l2])
+        string_short = string_short[l2+10:]
+        l1 = string_short.find("ray_start light")
+    lights = []
+    for i,ch in enumerate(chunks):
+        words = ch.split()
+        light = []
+        for j in range(5,21):
+            light.append(words[j])
+        lights.append(light)
+    return lights
+
+
+if __name__ == '__main__':
+    #geoData = pullGeo("./ifds/fire_lit.ifd")
+
+    #geoInfo, dimX, dimY, dimZ = getInfo(geoData)
+    #voxelData = getAllVoxelData(geoData, geoInfo)
+
+    lights = getLights("./ifds/fire_lit.ifd")
+    print lights
+
     # density = voxelData["density"]
     # slicedDen = density[:,0,:]
     # for sl in range(len(density)):

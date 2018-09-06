@@ -2,6 +2,7 @@ import tensorflow as tf
 
 from PIL import Image
 from data_gen import *
+from ifd_parse import *
 
 
 def lrelu(x, alpha=0.1):
@@ -14,7 +15,7 @@ def clip(x):
 
 class ParamAutoEncoder:
     input_size = [None, 128, 128, 3]
-    intrinsic_size = [None, 6]
+    intrinsic_size = [None, 12]
     param_size = [None, 10]
 
     def __init__(self):
@@ -34,14 +35,14 @@ class ParamAutoEncoder:
 
         #Dense layers
         flat = tf.reshape(pool2, [-1, 16*16*32])
-        # flat_plus = tf.concat([flat, self.intrinsic], 1)
-        dense0 = tf.layers.dense(flat, units=1024, activation=lrelu, name='dense0')
+        flat_plus = tf.concat([flat, self.intrinsic], 1)
+        dense0 = tf.layers.dense(flat_plus, units=1024, activation=lrelu, name='dense0')
         dense1 = tf.layers.dense(dense0, units=512, activation=lrelu, name='dense1')
         self.encoded = tf.layers.dense(dense1, units=10, name='encoded')
 
         #Decoding
-
-        decode1 = tf.layers.dense(self.encoded, units=1024, activation=lrelu, name='decode1')
+        decode2 = tf.layers.dense(self.encoded, units=512, activation=lrelu, name='decode2')
+        decode1 = tf.layers.dense(decode2, units=1024, activation=lrelu, name='decode1')
         decode0 = tf.layers.dense(decode1, units=16*16*32, activation=lrelu, name='decode0')
 
         #Deconvolution layers
@@ -85,6 +86,7 @@ class ParamAutoEncoder:
         self.sess.run(self.initial)
         summary_write = tf.summary.FileWriter('/tmp/logs/ae_log', graph=tf.get_default_graph())
 
+        x = 0
         change_count = 0
         last_mse = 0
         epoch = 0
@@ -94,18 +96,19 @@ class ParamAutoEncoder:
             total_loss = 0
             batch_count = 0
             batch_in = []
-            # intrin_in = []
+            intrin_in = []
             batch_out = []
             for count in range(len(data)):
                 if batch_count >= batch_size:
                     try:
-                        feed_dict = {self.input: batch_in, self.target: batch_out}
+                        feed_dict = {self.input: batch_in, self.intrinsic: intrin_in, self.target: batch_out}
                         summary, loss, _ = self.sess.run([self.merge, self.param_loss, self.train], feed_dict=feed_dict)
-                        summary_write.add_summary(summary, epoch)
+                        summary_write.add_summary(summary, x)
+                        x += 1
                         total_loss += loss
                         batch_count = 0
                         batch_in = []
-                        # intrin_in = []
+                        intrin_in = []
                         batch_out = []
                     except Exception as fail:
                         continue
@@ -118,12 +121,12 @@ class ParamAutoEncoder:
                     img_in = img_in / 255.0
                     count += 1
                     batch_in.append(img_in)
-                    # intrin_in.append(intrinsics[int(item/100)])
                     batch_out.append(params)
+                    intrin_in.append(getIntrinsics("./ifds/fire_{}.ifd".format(int(item/400))))
                     batch_count += 1
             if len(batch_in) > 0:
                 try:
-                    feed_dict = {self.input: batch_in, self.target: batch_out}
+                    feed_dict = {self.input: batch_in, self.intrinsic: intrin_in, self.target: batch_out}
                     loss, _ = self.sess.run([self.param_loss, self.train], feed_dict=feed_dict)
                     total_loss += loss
                 except Exception as fail:

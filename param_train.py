@@ -1,6 +1,6 @@
-from subprocess import call
 from PIL import Image
 from data_gen import *
+from ifd_parse import *
 
 import tensorflow as tf
 
@@ -11,12 +11,14 @@ def lrelu(x, alpha=0.1):
 
 class ParamLearner:
     input_size = [None, 128, 128, 3]
+    intrinsic_size = [None, 12]
     output_size = [None, 10]
 
     def __init__(self):
         gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.333)
         self.sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
         self.input = tf.placeholder(tf.float32, self.input_size, name='input')
+        self.intrinsic = tf.placeholder(tf.float32, self.intrinsic_size, name='intrinsic')
         self.target = tf.placeholder(tf.float32, self.output_size, name='target')
 
         #Convolutional layers
@@ -29,7 +31,8 @@ class ParamLearner:
 
         #Dense layers
         flat = tf.layers.flatten(pool2)
-        dense0 = tf.layers.dense(flat, units=2048, activation=lrelu, name='dense0')
+        flat_plus = tf.concat([flat, self.intrinsic], 1)
+        dense0 = tf.layers.dense(flat_plus, units=2048, activation=lrelu, name='dense0')
         dense1 = tf.layers.dense(dense0, units=1024, activation=lrelu, name='dense1')
         dense2 = tf.layers.dense(dense1, units=512, activation=lrelu, name='dense2')
         self.output = tf.layers.dense(dense2, units=10, name='output')
@@ -60,6 +63,7 @@ class ParamLearner:
         self.sess.run(self.initial)
         summary_write = tf.summary.FileWriter('/tmp/logs/one_log', graph=tf.get_default_graph())
 
+        x=0
         change_count = 0
         last_mse = 0
         epoch = 0
@@ -70,16 +74,19 @@ class ParamLearner:
             total_loss = 0
             batch_count = 0
             batch_in = []
+            intrin_in = []
             batch_out = []
             for count in range(len(data)):
                 if batch_count >= batch_size:
                     try:
-                        feed_dict = {self.input: batch_in, self.target: batch_out}
+                        feed_dict = {self.input: batch_in, self.intrinsic: intrin_in, self.target: batch_out}
                         summary, loss, output, _ = self.sess.run([self.merge, self.cost, self.output, self.train], feed_dict=feed_dict)
-                        summary_write.add_summary(summary, epoch)
+                        summary_write.add_summary(summary, x)
+                        x += 1
                         total_loss += loss
                         batch_count = 0
                         batch_in = []
+                        intrin_in = []
                         batch_out = []
                     except Exception as fail:
                         continue
@@ -93,10 +100,11 @@ class ParamLearner:
                     count += 1
                     batch_in.append(img_in)
                     batch_out.append(params)
+                    intrin_in.append(getIntrinsics("./ifds/fire_{}.ifd".format(int(item/400))))
                     batch_count += 1
             if len(batch_in) > 0:
                 try:
-                    feed_dict = {self.input: batch_in, self.target: batch_out}
+                    feed_dict = {self.input: batch_in, self.intrinsic: intrin_in, self.target: batch_out}
                     loss, output, _ = self.sess.run([self.cost, self.output, self.train], feed_dict=feed_dict)
                     total_loss += loss
                 except Exception as fail:
@@ -120,9 +128,9 @@ class ParamLearner:
         # img.thumbnail((128, 128), Image.ANTIALIAS)
         img_in = np.asarray(img)
         img_in = img_in / 255.0
-        batch_in = []
-        batch_in.append(img_in)
-        feed_dict = {self.input: batch_in}
+        batch_in = [img_in]
+        intrin_in = [getIntrinsics("./ifds/fire.ifd")]
+        feed_dict = {self.input: batch_in, self.intrinsic: intrin_in}
         output, _ = self.sess.run([self.output, self.input], feed_dict=feed_dict)
 
         params = denormalize(output[0])
