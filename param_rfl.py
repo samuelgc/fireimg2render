@@ -143,6 +143,27 @@ class ParamRenderFeedback:
             last_mse = mse
             print "Epoch: {} --> Average Loss: {}".format(epoch, total_loss / len(data))
 
+    def test(self, filename, attempt):
+        img = Image.open(filename)
+        img = img.resize((128, 128), Image.BICUBIC)
+        # img.thumbnail((128, 128), Image.ANTIALIAS)
+        img_in = np.asarray(img)
+        img_in = img_in / 255.0
+        batch_in = [img_in]
+        intrin_in = [getIntrinsics("./ifds/fire.ifd")]
+        feed_dict = {self.input: batch_in, self.intrinsic: intrin_in}
+        output, _ = self.sess.run([self.encoded, self.input], feed_dict=feed_dict)
+
+        params = denormalize(output[0])
+        with open('./ifds/fire.ifd') as f:
+            search_string = "fc_colorramp_the_basis_strings ( \"linear\" \"linear\" ) fc_colorramp_the_key_positions ( 0 1 ) fc_colorramp_the_key_values ( 0 0 0 1 1 1 )"
+            replace_string = "s_densityscale {} s_int {} s_color {} {} {} fi_int {} fc_int {} fc_colorramp_the_basis_strings ( \"linear\" \"linear\" ) fc_colorramp_the_key_positions ( 0 1 ) fc_colorramp_the_key_values ( 0 0 0 1 1 1 ) fc_bbtemp {} fc_bbadapt {} fc_bbburn {}" \
+                .format(params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7], params[8], params[9])
+            contents = f.read().replace(search_string, replace_string)
+        with open('./ifds/test_render{}.ifd'.format(attempt), "w+") as f:
+            f.write(contents)
+        call(["mantra", "./ifds/test_render{}.ifd".format(attempt), "./render/test_render{}.jpg".format(attempt)])
+
 
 def main():
     rfl = ParamRenderFeedback()
