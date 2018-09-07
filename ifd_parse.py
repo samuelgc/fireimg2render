@@ -108,12 +108,14 @@ def getIntrinsics(filename):
     voxelData = getAllVoxelData(geoData, geoInfo, dimX, dimY, dimZ)
     geoStats = geoIntrinsics(voxelData, ["density", "heat", "temperature"])
 
+    """
     lights = getLights(filename)
     for i in range(57):
         if i < len(lights):
             geoStats.append(lights[i])
         else:
             geoStats.append(0)
+    """
     return geoStats
 
 
