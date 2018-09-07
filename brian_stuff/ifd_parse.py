@@ -102,28 +102,36 @@ def getLights(filename):
         chunks.append(string_short[l1:l2])
         string_short = string_short[l2+10:]
         l1 = string_short.find("ray_start light")
-    lights = []
+
+    lights = np.empty([len(chunks),4,4])
     for i,ch in enumerate(chunks):
         words = ch.split()
-        light = []
+        light = np.empty([4,4])
         for j in range(5,21):
-            light.append(words[j])
-        lights.append(light)
+            light[(j-5)%4][(j-5)//4] = words[j]
+        lights[i] = light
     return lights
-
     
-
+def getCamera(filename):
+    f = open(filename,"r")
+    file_string = f.read()
+    f.close()
+    s_index = file_string.find("ray_transform")
+    e_index = file_string.find("\n",s_index)
+    new_string = file_string[s_index + 13:e_index]
+    size = 4
+    transform = np.empty([4,4])
+    for i,word in enumerate(new_string.split()):
+        transform[i%4][i//4] = int(word)
+    return transform
 if __name__== '__main__':
     geoData = pullGeo("fire_lit.ifd")
     geoInfo, dimX , dimY , dimZ = getInfo(geoData)
     voxelData = getAllVoxelData(geoData,geoInfo)
-
     lights = getLights("fire_lit.ifd")
-    print lights
-    # density = voxelData["density"]
-    # slicedDen = density[:,:,:]
-    # for sl in range(len(density[1])):
-    #     imgTemp = Image.fromarray(np.uint8(density[:,sl,:] * 255),"L")
-    #     imgTemp.save("slice/[{}].png".format(str(sl + 1).zfill(2)))
+    camera = getCamera("fire_lit.ifd")
+    print "camera\n",camera
+    print "Lights\n",lights
+    
     
     
