@@ -84,7 +84,7 @@ class ParamRenderFeedback:
             data = np.loadtxt('./train_data/shader_params.csv', delimiter=",")
 
         self.sess.run(self.initial)
-        summary_write = tf.summary.FileWriter('/tmp/logs/rfl_log', graph=tf.get_default_graph())
+        summary_write = tf.summary.FileWriter('/tmp/logs/rfl2_log', graph=tf.get_default_graph())
 
         x = 0
         change_count = 0
@@ -168,6 +168,9 @@ class ParamRenderFeedback:
 def main():
     rfl = ParamRenderFeedback()
     rfl.start_train()
+    rfl.test("./fire_images/google/fire/19. fire_from_brazier.jpg", '_rfl_0')
+    rfl.test("./fire_images/google/fire/82. wood-flame-fire-glow-darkness-lighting-heat-burning-hot-match-983268.jpg", '_rfl_1')
+    rfl.test("./fire_images/google/fire/172. latest_cb=20121117173942.jpg", '_rfl_2')
 
 
 if __name__ == '__main__':

@@ -106,44 +106,61 @@ def getIntrinsics(filename):
     geoData = pullGeo(filename)
     geoInfo, dimX, dimY, dimZ = getInfo(geoData)
     voxelData = getAllVoxelData(geoData, geoInfo, dimX, dimY, dimZ)
-    return geoIntrinsics(voxelData, ["density", "heat", "temperature"])
+    geoStats = geoIntrinsics(voxelData, ["density", "heat", "temperature"])
+
+    lights = getLights(filename)
+    for i in range(57):
+        if i < len(lights):
+            geoStats.append(lights[i])
+        else:
+            geoStats.append(0)
+    return geoStats
 
 
 def getLights(filename):
-    f = open(filename,"r")
+    f = open(filename, "r")
     file_str = f.read()
     f.close()
     l1 = file_str.find("ray_start light")
     string_short = file_str[l1:]
     chunks = []
-    #get chuncks AKA diff lights
+    # get chuncks AKA diff lights
     l1 = string_short.find("ray_start light")
     while 0 <= l1:
         l2 = string_short.find("ray_end")
         chunks.append(string_short[l1:l2])
-        string_short = string_short[l2+10:]
+        string_short = string_short[l2 + 10:]
         l1 = string_short.find("ray_start light")
+
     lights = []
-    for i,ch in enumerate(chunks):
+    for i, ch in enumerate(chunks):
+        s_index = ch.find("lightcolor")
+        e_index = ch.find("\n", s_index)
+        new_string = ch[s_index:e_index]
+        rgb = new_string.split()
+        for j in range(1,4):
+            lights.append(float(rgb[j]) / 1040.0)
         words = ch.split()
-        light = []
         for j in range(5,21):
-            light.append(words[j])
-        lights.append(light)
+            lights.append(words[j])
     return lights
 
 
+def getCamera(filename):
+    f = open(filename, "r")
+    file_string = f.read()
+    f.close()
+    s_index = file_string.find("ray_transform")
+    e_index = file_string.find("\n", s_index)
+    new_string = file_string[s_index + 13:e_index]
+    size = 4
+    transform = np.empty([4, 4])
+    for i, word in enumerate(new_string.split()):
+        transform[i % 4][i // 4] = int(word)
+    return transform
+
+
 if __name__ == '__main__':
-    #geoData = pullGeo("./ifds/fire_lit.ifd")
-
-    #geoInfo, dimX, dimY, dimZ = getInfo(geoData)
-    #voxelData = getAllVoxelData(geoData, geoInfo)
-
+    print getIntrinsics("./ifds/fire_lit.ifd")
     lights = getLights("./ifds/fire_lit.ifd")
     print lights
-
-    # density = voxelData["density"]
-    # slicedDen = density[:,0,:]
-    # for sl in range(len(density)):
-    #     imgTemp = Image.fromarray(np.uint8(density[:,sl,:] * 255),"L")
-    #     imgTemp.save("slice[{}].png".format(str(sl + 1).zfill(2)))
