@@ -84,13 +84,13 @@ class ParamRenderFeedback:
             data = np.loadtxt('./train_data/shader_params.csv', delimiter=",")
 
         self.sess.run(self.initial)
-        summary_write = tf.summary.FileWriter('/tmp/logs/rfl2_log', graph=tf.get_default_graph())
+        summary_write = tf.summary.FileWriter('/tmp/logs/rfl_log', graph=tf.get_default_graph())
 
         x = 0
         change_count = 0
         last_mse = 0
         epoch = 0
-        while change_count < 5:
+        while change_count < 3:
             sample_set = np.arange(len(data))
             np.random.shuffle(sample_set)
             total_loss = 0
@@ -110,7 +110,8 @@ class ParamRenderFeedback:
 
                     encoded_in = [output[0].copy()]
                     encoding = denormalize(output[0])
-                    with open('./ifds/fire.ifd') as f:
+                    selected = 0 # random.randint(0, 3)
+                    with open('./ifds/fire_{}.ifd'.format(selected)) as f:
                         search_string = "fc_colorramp_the_basis_strings ( \"linear\" \"linear\" ) fc_colorramp_the_key_positions ( 0 1 ) fc_colorramp_the_key_values ( 0 0 0 1 1 1 )"
                         replace_string = "s_densityscale {} s_int {} s_color {} {} {} fi_int {} fc_int {} fc_colorramp_the_basis_strings ( \"linear\" \"linear\" ) fc_colorramp_the_key_positions ( 0 1 ) fc_colorramp_the_key_values ( 0 0 0 1 1 1 ) fc_bbtemp {} fc_bbadapt {} fc_bbburn {}" \
                             .format(encoding[0], encoding[1], encoding[2], encoding[3], encoding[4], encoding[5], encoding[6], encoding[7], encoding[8], encoding[9])
@@ -119,11 +120,11 @@ class ParamRenderFeedback:
                         f.write(contents)
                     call(["mantra", "./ifds/temp_render.ifd", "./render/temp_render.jpg"])
 
-                    render = Image.open("./render/temp_render.jpg".format(item))
+                    render = Image.open("./render/temp_render.jpg")
                     render.thumbnail((128, 128), Image.ANTIALIAS)
                     rendered = np.asarray(render)
                     rendered = rendered / 255.0
-                    fire_intrin = [getIntrinsics("./ifds/fire.ifd")]
+                    fire_intrin = [getIntrinsics("./ifds/fire_{}.ifd".format(selected))]
                     render_in = [rendered]
                     feed_dict = {self.input: input_in, self.target: encoded_in, self.intrinsic: fire_intrin, self.render: render_in}
                     summary, loss, _ = self.sess.run([self.merge, self.param_loss, self.image_train], feed_dict=feed_dict)
@@ -133,7 +134,6 @@ class ParamRenderFeedback:
                 except Exception as fail:
                     print fail
                     continue
-
             epoch += 1
             mse = total_loss / len(data)
             if abs(mse - last_mse) < 0.0005:

@@ -1,5 +1,14 @@
+.idea
 .idea/*
 idea/*
 ifds/fire*
 ifds/render_fire*
+ifds/temp*
 render/render*
+render/temp*
+random/*
+random
+random/ifds
+random/imgs
+random/ifds/*
+random/imgs/*
