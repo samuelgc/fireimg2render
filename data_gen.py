@@ -79,7 +79,7 @@ def denormalize(sample):
     sample[7] *= 7500
     sample[9] *= 4.0
     sample[9] -= 2.0
-    for x in range(len(sample)):
+    for x in range(len(sample) - 1):
         if sample[x] < 0:
             sample[x] = 0
     return sample
