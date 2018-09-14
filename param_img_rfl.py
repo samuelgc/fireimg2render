@@ -6,6 +6,10 @@ from data_gen import *
 from ifd_parse import *
 
 
+def clip(x):
+    return tf.maximum(x, 0)
+
+
 class ParamRenderFeedback:
     image_size = [None, 128, 128, 3]
     intrinsic_size = [None, 12]
@@ -45,7 +49,7 @@ class ParamRenderFeedback:
         upsamp2 = tf.layers.conv2d_transpose(deconv2, 32, 3, 2, padding="same", name='upsamp2')
         upsamp1 = tf.layers.conv2d_transpose(upsamp2, 48, 3, 2, padding="same", name='upsamp1')
         upsamp0 = tf.layers.conv2d_transpose(upsamp1, 64, 3, 2, padding="same", name='upsamp0')
-        self.decoded = tf.layers.conv2d(upsamp0, 3, 3, padding="same", name='decoded')
+        self.decoded = tf.layers.conv2d(upsamp0, 3, 3, padding="same", activation=clip, name='decoded')
 
         #Parameter Loss
         self.param_diff = tf.square(self.target - self.encoded)
@@ -77,7 +81,7 @@ class ParamRenderFeedback:
         else:
             data = np.loadtxt('./train_data/shader_params.csv', delimiter=",")
 
-        summary_write = tf.summary.FileWriter('/tmp/logs/rfl1_log', graph=tf.get_default_graph())
+        summary_write = tf.summary.FileWriter('/tmp/logs/rimg_rfl1_log', graph=tf.get_default_graph())
 
         x = 0
         change_count = 0
@@ -116,7 +120,7 @@ class ParamRenderFeedback:
             print "Phase 1--Epoch: {} --> Average Loss: {}".format(epoch, total_loss / len(data))
 
     def phase_2(self, data):
-        summary_write = tf.summary.FileWriter('/tmp/logs/img_rfl2_log', graph=tf.get_default_graph())
+        summary_write = tf.summary.FileWriter('/tmp/logs/rimg_rfl2_log', graph=tf.get_default_graph())
 
         x = 0
         change_count = 0
@@ -203,9 +207,9 @@ def main():
     dataset = glob.glob("./fire_images/google/fire/*.jpg")
     rfl.phase_2(data=dataset)
 
-    rfl.test("./fire_images/google/fire/19. fire_from_brazier.jpg", 'img_rfl_0')
-    rfl.test("./fire_images/google/fire/82. wood-flame-fire-glow-darkness-lighting-heat-burning-hot-match-983268.jpg", 'img_rfl_1')
-    rfl.test("./fire_images/google/fire/172. latest_cb=20121117173942.jpg", 'img_rfl_2')
+    rfl.test("./fire_images/google/fire/19. fire_from_brazier.jpg", 'rimg_rfl_0')
+    rfl.test("./fire_images/google/fire/82. wood-flame-fire-glow-darkness-lighting-heat-burning-hot-match-983268.jpg", 'rimg_rfl_1')
+    rfl.test("./fire_images/google/fire/172. latest_cb=20121117173942.jpg", 'rimg_rfl_2')
 
 
 if __name__ == '__main__':
